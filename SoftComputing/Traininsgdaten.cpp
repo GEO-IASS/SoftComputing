@@ -61,4 +61,5 @@ void Traininsgdaten::traininsgdatenListe() {
 		/*D14*/{ REGEN,   MILD,  HOCH,   STARK,   NICHT_SPIELEN },
 		};
 
+
 }

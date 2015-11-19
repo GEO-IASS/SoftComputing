@@ -177,10 +177,11 @@ double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten) {
 	switch (Attribute)
 	{
 	case AUSBLICK_ID:
-		rueckgabeVariable = (getEntropieZielattributes(traininsgdaten) - berechneInfoOutlook(traininsgdaten)) / splitInfoOutlook(traininsgdaten);
+		rueckgabeVariable = 
+		rueckgabeVariable = berechneGain (Attribute,  traininsgdaten) / splitInfoOutlook(traininsgdaten);
 		break;
 	case WIND_ID:
-		rueckgabeVariable = (getEntropieZielattributes(traininsgdaten) - berechneInfoWindy(traininsgdaten)) / splitInfoWindy(traininsgdaten);
+		rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / splitInfoWindy(traininsgdaten);
 		break;
 		/*UND So Weiter für Andere Attribute falls nöitg*/
 	}

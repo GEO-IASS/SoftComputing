@@ -42,7 +42,7 @@ void main() {
 
 
 
-	/*
+	
 
 	Tag *tagarr;
 	tagarr = new Tag[6];
@@ -50,11 +50,11 @@ void main() {
 	// hier ist nur beispiels
 	int k = 0;
 
-	int AttributID = WIND_ID; //Hier die IDs  einsetzten siehe Defines.h
+	int AttributID = AUSBLICK_ID; //Hier die IDs  einsetzten siehe Defines.h
 
 	switch (AttributID)
 	{
-	case WIND_ID:	for (int i = 0; i < ANZAHLDATEN; i++) {
+	case WIND_ID:	for (int i = 0; i < 14; i++) {
 		if (tabelle.mtTagArray[i].getWind() == STARK)
 
 		{
@@ -63,8 +63,8 @@ void main() {
 			cout << "-----" << endl;
 		}
 	}	break;
-	case AUSBLICK_ID:for (int i = 0; i < ANZAHLDATEN; i++) {
-		if (tabelle.mtTagArray[i].getAusblick() == SONNIG)
+	case AUSBLICK_ID:for (int i = 0; i < 14; i++) {
+		if (tabelle.mtTagArray[i].getAusblick() == BEWOELKT)
 		{
 			tagarr[k] = tabelle.mtTagArray[i];
 			k++;
@@ -76,11 +76,11 @@ void main() {
 	}
 
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < k; i++)
 		tagarr[i].tagAusgabe();
 
 	cin.ignore(1);
-	*/
+	
 }//END OF MAIN
 
 
