@@ -1,31 +1,38 @@
 #include "Algorithmen.h"
 #include <iostream>
-//#include <vector>
+
 //cout << ARRAY_SIZE(tDaten.mtTagArray) << endl;
 
 int Tag::miTagCounter = 0;
 
 
-
+vector<Tag> tagVektor;
 
 void main() {
 		
 	Traininsgdaten tabelle;
-	tabelle.traininsgdatenLesen();
-		
-
-	for (int i = 0; i < ANZAHLDATEN; i++)
-		tabelle.mtTagArray[i].tagAusgabe();
-
-
-	cout << endl << "Entropie des Zielattributes: " << getEntropieZielattributes(&tabelle) << endl;
+		tabelle.traininsgdatenLesen();
+	
+	
+	//cout << tabelle.mtTagVector->size() << endl;
+	//tabelle.mtTagVector->erase(tabelle.mtTagVector->begin()+1);
+	//cout << tabelle.mtTagVector->size() << endl;
+	
+	for (int i = 0; i < tabelle.mtTagVector->size(); i++){
+	tabelle.mtTagArray[i].tagAusgabe();
+		//	tagVektor.push_back( tabelle.mtTagArray[i]);
+	
+	}
+	
+	
+	cout << endl << "Entropie des Zielattributes: " << getEntropieZielattributes(&tabelle)<< endl;
 	cout << "InfoOutlook: " <<	"\t\t"<<	berechneInfo(AUSBLICK_ID, &tabelle) << endl;
-	cout << "InfoWindy: " << "\t\t" <<		berechneInfo(WIND_ID, &tabelle) << endl;
-	cout << "GainWindy: " << "\t\t" <<		berechneGain(WIND_ID, &tabelle) << endl;
 	cout << "GainOutlook: " << "\t\t" <<	berechneGain(AUSBLICK_ID, &tabelle) << endl;
 	cout << "SplitInfoOutlook: " << "\t" << berechneSplitInfo(AUSBLICK_ID, &tabelle) << endl;
-	cout << "SplitInfoWindy: " << "\t" <<	berechneSplitInfo(WIND_ID, &tabelle) << endl;
 	cout << "GainRatioOutlook: " << "\t" << berechneGainRatio(AUSBLICK_ID, &tabelle) << endl;
+	cout << "InfoWindy: " << "\t\t" <<		berechneInfo(WIND_ID, &tabelle) << endl;
+	cout << "GainWindy: " << "\t\t" <<		berechneGain(WIND_ID, &tabelle) << endl;
+	cout << "SplitInfoWindy: " << "\t" <<	berechneSplitInfo(WIND_ID, &tabelle) << endl;
 	cout << "GainRatioWindy: " << "\t" <<	berechneGainRatio(WIND_ID, &tabelle) << endl;
 	
 	cout << "Bestes Atribut: " << "\t"<<	sucheBesteAtrribut(&tabelle) << endl ; // Nach gain gewählt siehe code

@@ -6,6 +6,7 @@ class Attribut
 {	
 
 public:
+	
 	string    msAusblick;
 	int	      miTemperatur, miLuftfeuchtigkeit;
 	bool	  mbWind;

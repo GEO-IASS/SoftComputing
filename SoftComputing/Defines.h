@@ -13,7 +13,7 @@
 #define SONNIG			 "Sonnig"
 #define REGEN			 "Regen"
 #define BEWOELKT		 "Bewoelkt"
-#define ANZAHLDATEN      14
+
 
 #define AUSBLICK_ID				100
 #define TEMPERATUR_ID			200

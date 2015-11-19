@@ -6,6 +6,8 @@
 #include "Defines.h"
 #include <cmath>
 
+
+
 double getEntropieZielattributes(Traininsgdaten *tD);
 double berechneInfoOutlook(Traininsgdaten *tD);
 double berechneInfoWindy(Traininsgdaten *tD);

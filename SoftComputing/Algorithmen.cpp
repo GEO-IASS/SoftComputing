@@ -1,4 +1,5 @@
 #include "Traininsgdaten.h"
+#define ANZAHLDATEN      tDaten->mtTagVector->size()
 
 
 
@@ -23,7 +24,8 @@ double berechneInfoOutlook(Traininsgdaten *tDaten) {
 	double sunny_y = 0, sunny_n = 0, overcast_y = 0, overcast_n = 0, rain_y = 0, rain_n = 0;
 	double sunny_sum = 0, overcast_sum = 0, rain_sum = 0;
 
-	for (int j = 0; j < ANZAHLDATEN; j++) {
+	for (int j = 0; j <ANZAHLDATEN; j++) {
+		
 		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == SONNIG) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == SPIELEN)) sunny_y++;
 		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == SONNIG) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == NICHT_SPIELEN)) sunny_n++;
 		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == BEWOELKT) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == SPIELEN)) overcast_y++;
