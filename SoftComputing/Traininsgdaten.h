@@ -13,6 +13,18 @@ public:
 
 	void traininsgdatenLesen();
 	void traininsgdatenListe();
+
+	void setNewTraininsgdaten(Tag * tArra);
+
+	
+
+	
+
+	
+
+	
+
+	
 	
 };
 

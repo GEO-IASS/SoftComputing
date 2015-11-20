@@ -64,7 +64,7 @@ void main() {
 		}
 	}	break;
 	case AUSBLICK_ID:for (int i = 0; i < 14; i++) {
-		if (tabelle.mtTagArray[i].getAusblick() == BEWOELKT)
+		if (tabelle.mtTagArray[i].getAusblick() == SONNIG)
 		{
 			tagarr[k] = tabelle.mtTagArray[i];
 			k++;
@@ -75,11 +75,13 @@ void main() {
 	default:break;
 	}
 
+	tabelle.setNewTraininsgdaten(tagarr);
+	
+	for (int i = 0; i < k; i++) 
+		tabelle.mtTagArray[i].tagAusgabe();
 
-	for (int i = 0; i < k; i++)
-		tagarr[i].tagAusgabe();
-
-	cin.ignore(1);
+	
+	//cin.ignore(1);
 	
 }//END OF MAIN
 
