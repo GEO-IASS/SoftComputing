@@ -1,13 +1,10 @@
 #include "Algorithmen.h"
-#include <iostream>
+
 
 //cout << ARRAY_SIZE(tDaten.mtTagArray) << endl;
 
-int Tag::miTagCounter = 0;
 
 
-
-void splitTraininsgdaten(int attribut, Traininsgdaten *tD);
 
 void main() {
 		
@@ -26,7 +23,7 @@ void main() {
 	}
 	cout << tabelle.mtTagVector->size() << endl;
 	
-	cout << endl << "Entropie des Zielattributes: " << getEntropieZielattributes(&tabelle)<< endl;
+	cout <<"Zielattributes: "<< "\t" << getEntropieZielattributes(&tabelle)<< endl;
 	cout << "InfoOutlook: " <<	"\t\t"<<	berechneInfo(AUSBLICK_ID, &tabelle) << endl;
 	cout << "GainOutlook: " << "\t\t" <<	berechneGain(AUSBLICK_ID, &tabelle) << endl;
 	cout << "SplitInfoOutlook: " << "\t" << berechneSplitInfo(AUSBLICK_ID, &tabelle) << endl;
@@ -35,55 +32,31 @@ void main() {
 	cout << "GainWindy: " << "\t\t" <<		berechneGain(WIND_ID, &tabelle) << endl;
 	cout << "SplitInfoWindy: " << "\t" <<	berechneSplitInfo(WIND_ID, &tabelle) << endl;
 	cout << "GainRatioWindy: " << "\t" <<	berechneGainRatio(WIND_ID, &tabelle) << endl;
-	////
 	cout << "Bestes Atribut: " << "\t"<<	sucheBesteAtrribut(&tabelle) << endl ; // Nach gain gewählt siehe code
+	cout << "------------" << endl;
 
 
-
-
-
-
-	
-
-	
-	
-	///-----!----Kleine Sortierung --->TESTEN NACH Attributs ----!----------	
-	// hier ist nur beispiels
-	
+		
 
 	
 
 
-	
-
-	splitTraininsgdaten(AUSBLICK_ID, &tabelle);
+	teilenTraininsgdaten(AUSBLICK_ID, &tabelle);
 	
 	for (int i = 0; i < tabelle.mtTagVector->size(); i++)
 		tabelle.mtTagVector->at(i).tagAusgabe();
 	
 	cout << tabelle.mtTagVector->size() << endl;
-	cout << "Info: " << "\t\t" << berechneInfo(AUSBLICK_ID, &tabelle) << endl;
-	
+	cout << "InfoLuft: " << "\t\t" << berechneGain(LUFTFEUCHTIGKEIT_ID, &tabelle) << endl;
+	cout << "InfoWindy: " << "\t\t" << berechneGain(WIND_ID,&tabelle) << endl;
+	cout << setw(7) << "s" << endl;
 	//cin.ignore(1);
 	
 }//END OF MAIN
-vector<Tag> tagarr;
 
- void splitTraininsgdaten(int attribut, Traininsgdaten *tD) {
-	 
-	 
-	 int size = tD->mtTagVector->size();
-	
-	 switch (attribut)
-	 {
-	 
-	 case AUSBLICK_ID:for (int i = 0; i < size; i++) {
-		 if (tD->mtTagVector->at(i).getAusblick() == REGEN)
-			 tagarr.push_back(tD->mtTagVector->at(i));
-			 }  tD->SubSetTraininsgdaten(&tagarr); break;
-	
-  }//end Switch
-}
+
+
+ 
 
 
 

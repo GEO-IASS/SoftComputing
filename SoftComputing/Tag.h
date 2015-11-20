@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "Attribut.h"
 using namespace std;
@@ -10,7 +11,7 @@ class Tag
 {
 private:  
 	
-	static int miTagCounter;
+	
 
 public:	
 	Attribut maAttribut;
@@ -23,7 +24,7 @@ public:
 	bool	getWind();
 	bool	getSpiel();
 
-	static int getTagCounter();
+	
 	
 	void tagAusgabe();
 	

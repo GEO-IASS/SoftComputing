@@ -1,6 +1,7 @@
 #include "Traininsgdaten.h"
 #define ANZAHLDATEN      tDaten->mtTagVector->size()
 
+vector<Tag> tagVektor;
 
 
 
@@ -86,6 +87,32 @@ double berechneInfoWindy(Traininsgdaten *tDaten) {
 	return -(T_h*(A_h*log2(A_h) + B_h*log2(B_h))) - (T_l*(A_l*log2(A_l) + B_l*log2(B_l)));
 }
 //-----------------------------------------
+double berechneInfoLuft(Traininsgdaten *tDaten) {
+
+	double stark_y = 0, schwach_y = 0, stark_n = 0, schwach_n = 0, stark_sum = 0, schwach_sum = 0;
+	double summe = 0;
+
+	for (int j = 0; j < ANZAHLDATEN; j++) {
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == HOCH) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) stark_y++;
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == HOCH) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) stark_n++;
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == NORMAL) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) schwach_y++;
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == NORMAL) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) schwach_n++;
+	}
+
+	stark_sum = stark_y + stark_n;
+	schwach_sum = schwach_y + schwach_n;
+	summe = stark_sum + schwach_sum;
+
+	double A_h = stark_y / stark_sum;		if (A_h == 0) A_h = 1;
+	double B_h = stark_n / stark_sum;		if (B_h == 0) B_h = 1;
+	double A_l = schwach_y / schwach_sum;	if (A_l == 0) A_l = 1;
+	double B_l = schwach_n / schwach_sum;	if (B_l == 0) B_l = 1;
+	double T_h = stark_sum / summe;
+	double T_l = schwach_sum / summe;
+
+	return -(T_h*(A_h*log2(A_h) + B_h*log2(B_h))) - (T_l*(A_l*log2(A_l) + B_l*log2(B_l)));
+}
+//-----------------------------------------
 double splitInfoOutlook(Traininsgdaten *tDaten) {
 
 	double summe = 0, sunny = 0, overcast = 0, rain = 0;
@@ -132,6 +159,9 @@ double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten) {
 	case WIND_ID:
 		rueckgabeVariable = berechneInfoWindy(traininsgdaten);
 		break;
+	case LUFTFEUCHTIGKEIT_ID:
+		rueckgabeVariable = berechneInfoLuft(traininsgdaten);
+		break;
 		/*UND So Weiter für Andere Attribute falls nöitg*/
 	}
 	return rueckgabeVariable;
@@ -148,6 +178,9 @@ double berechneGain(int Attribute, Traininsgdaten *traininsgdaten) {
 		break;
 	case WIND_ID:
 		rueckgabeVariable = getEntropieZielattributes(traininsgdaten) - berechneInfoWindy(traininsgdaten);
+		break;
+	case LUFTFEUCHTIGKEIT_ID:
+		rueckgabeVariable = getEntropieZielattributes(traininsgdaten) - berechneInfoLuft(traininsgdaten);
 		break;
 		/*UND So Weiter für Andere Attribute falls nöitg*/
 	}
@@ -208,4 +241,18 @@ string sucheBesteAtrribut(Traininsgdaten *tDaten) {
 		besteAttribut = "Wind";
 
 	return  besteAttribut;
+}
+
+
+void teilenTraininsgdaten(int attribut, Traininsgdaten *tD) {
+	
+	int size = tD->mtTagVector->size();
+	switch (attribut)
+	{
+	case AUSBLICK_ID:for (int i = 0; i < size; i++) {
+		if (tD->mtTagVector->at(i).getAusblick() == SONNIG)
+			tagVektor.push_back(tD->mtTagVector->at(i));
+	}  tD->SubSetTraininsgdaten(&tagVektor); break;
+	
+	}//end Switch
 }

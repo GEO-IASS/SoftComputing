@@ -11,6 +11,7 @@
 double getEntropieZielattributes(Traininsgdaten *tD);
 double berechneInfoOutlook(Traininsgdaten *tD);
 double berechneInfoWindy(Traininsgdaten *tD);
+double berechneInfoLuft(Traininsgdaten *tDaten);
 double splitInfoOutlook(Traininsgdaten *tD);
 double splitInfoWindy(Traininsgdaten *tD);
 string sucheBesteAtrribut(Traininsgdaten *tD);
@@ -19,4 +20,6 @@ double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneGain(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneSplitInfo(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten);
+
+void teilenTraininsgdaten(int attribut, Traininsgdaten *tD);
 
