@@ -119,7 +119,7 @@ double splitInfoWindy(Traininsgdaten *tDaten) {
 }
 
 //-----------------------------------------
-//------------------AllgemeinAlgorithmen-----------------------
+//------------------AllgemeinAlgorithmenFürRekursion-----------------------
 
 double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten) {
 	double rueckgabeVariable;
