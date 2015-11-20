@@ -9,7 +9,7 @@ double getEntropieZielattributes(Traininsgdaten *tDaten) {
 
 	double positiv = 0, negativ = 0, summe = 0;
 	for (int i = 0; i < ANZAHLDATEN; i++) {
-		if (tDaten->mtTagArray[i].maAttribut.mbSpiel) positiv++;
+		if (tDaten->mtTagVector->at(i).getSpiel()) positiv++;
 		else negativ++;
 	}
 	summe = positiv + negativ;
@@ -26,12 +26,12 @@ double berechneInfoOutlook(Traininsgdaten *tDaten) {
 
 	for (int j = 0; j <ANZAHLDATEN; j++) {
 		
-		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == SONNIG) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == SPIELEN)) sunny_y++;
-		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == SONNIG) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == NICHT_SPIELEN)) sunny_n++;
-		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == BEWOELKT) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == SPIELEN)) overcast_y++;
-		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == BEWOELKT) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == NICHT_SPIELEN)) overcast_n++;
-		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == REGEN) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == SPIELEN)) rain_y++;
-		if ((tDaten->mtTagArray[j].maAttribut.msAusblick == REGEN) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == NICHT_SPIELEN)) rain_n++;
+		if ((tDaten->mtTagVector->at(j).getAusblick() == SONNIG) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) sunny_y++;
+		if ((tDaten->mtTagVector->at(j).getAusblick() == SONNIG) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) sunny_n++;
+		if ((tDaten->mtTagVector->at(j).getAusblick() == BEWOELKT) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) overcast_y++;
+		if ((tDaten->mtTagVector->at(j).getAusblick() == BEWOELKT) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) overcast_n++;
+		if ((tDaten->mtTagVector->at(j).getAusblick() == REGEN) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) rain_y++;
+		if ((tDaten->mtTagVector->at(j).getAusblick() == REGEN) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) rain_n++;
 	}
 
 	sunny_sum = sunny_y + sunny_n;
@@ -66,10 +66,10 @@ double berechneInfoWindy(Traininsgdaten *tDaten) {
 	double summe = 0;
 
 	for (int j = 0; j < ANZAHLDATEN; j++) {
-		if ((tDaten->mtTagArray[j].maAttribut.mbWind == STARK) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == SPIELEN)) stark_y++;
-		if ((tDaten->mtTagArray[j].maAttribut.mbWind == STARK) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == NICHT_SPIELEN)) stark_n++;
-		if ((tDaten->mtTagArray[j].maAttribut.mbWind == SCHWACH) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == SPIELEN)) schwach_y++;
-		if ((tDaten->mtTagArray[j].maAttribut.mbWind == SCHWACH) && (tDaten->mtTagArray[j].maAttribut.mbSpiel == NICHT_SPIELEN)) schwach_n++;
+		if ((tDaten->mtTagVector->at(j).getWind() == STARK) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) stark_y++;
+		if ((tDaten->mtTagVector->at(j).getWind() == STARK) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) stark_n++;
+		if ((tDaten->mtTagVector->at(j).getWind() == SCHWACH) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) schwach_y++;
+		if ((tDaten->mtTagVector->at(j).getWind() == SCHWACH) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) schwach_n++;
 	}
 
 	stark_sum = stark_y + stark_n;
@@ -90,9 +90,9 @@ double splitInfoOutlook(Traininsgdaten *tDaten) {
 
 	double summe = 0, sunny = 0, overcast = 0, rain = 0;
 	for (int i = 0; i < ANZAHLDATEN; i++) {
-		if (tDaten->mtTagArray[i].maAttribut.msAusblick == SONNIG) sunny++;
-		if (tDaten->mtTagArray[i].maAttribut.msAusblick == BEWOELKT) overcast++;
-		if (tDaten->mtTagArray[i].maAttribut.msAusblick == REGEN) rain++;
+		if (tDaten->mtTagVector->at(i).getAusblick() == SONNIG) sunny++;
+		if (tDaten->mtTagVector->at(i).getAusblick() == BEWOELKT) overcast++;
+		if (tDaten->mtTagVector->at(i).getAusblick() == REGEN) rain++;
 	}
 
 	summe = sunny + overcast + rain;
@@ -107,8 +107,8 @@ double splitInfoWindy(Traininsgdaten *tDaten) {
 
 	double summe = 0, stark = 0, schwach = 0;
 	for (int i = 0; i < ANZAHLDATEN; i++) {
-		if (tDaten->mtTagArray[i].maAttribut.mbWind == STARK) stark++;
-		if (tDaten->mtTagArray[i].maAttribut.mbWind == SCHWACH) schwach++;
+		if (tDaten->mtTagVector->at(i).getWind() == STARK) stark++;
+		if (tDaten->mtTagVector->at(i).getWind() == SCHWACH) schwach++;
 	}
 
 	summe = schwach + stark;
@@ -117,8 +117,9 @@ double splitInfoWindy(Traininsgdaten *tDaten) {
 
 	return -(A*log2(A) + B*log2(B));
 }
+
 //-----------------------------------------
-//-----------------------------------------
+//------------------AllgemeinAlgorithmen-----------------------
 
 double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten) {
 	double rueckgabeVariable;

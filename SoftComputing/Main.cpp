@@ -19,11 +19,11 @@ void main() {
 	//cout << tabelle.mtTagVector->size() << endl;
 	
 	for (int i = 0; i < tabelle.mtTagVector->size(); i++){
-	tabelle.mtTagArray[i].tagAusgabe();
+	tabelle.mtTagVector->at(i).tagAusgabe();
 		//	tagVektor.push_back( tabelle.mtTagArray[i]);
 	
 	}
-	
+	cout << tabelle.mtTagVector->size() << endl;
 	
 	cout << endl << "Entropie des Zielattributes: " << getEntropieZielattributes(&tabelle)<< endl;
 	cout << "InfoOutlook: " <<	"\t\t"<<	berechneInfo(AUSBLICK_ID, &tabelle) << endl;
@@ -34,7 +34,7 @@ void main() {
 	cout << "GainWindy: " << "\t\t" <<		berechneGain(WIND_ID, &tabelle) << endl;
 	cout << "SplitInfoWindy: " << "\t" <<	berechneSplitInfo(WIND_ID, &tabelle) << endl;
 	cout << "GainRatioWindy: " << "\t" <<	berechneGainRatio(WIND_ID, &tabelle) << endl;
-	
+	////
 	cout << "Bestes Atribut: " << "\t"<<	sucheBesteAtrribut(&tabelle) << endl ; // Nach gain gewählt siehe code
 
 
@@ -44,8 +44,8 @@ void main() {
 
 	
 
-	Tag *tagarr;
-	tagarr = new Tag[6];
+	vector<Tag> tagarr;
+	
 	///-----!----Kleine Sortierung --->TESTEN NACH Attributs ----!----------	
 	// hier ist nur beispiels
 	int k = 0;
@@ -55,18 +55,18 @@ void main() {
 	switch (AttributID)
 	{
 	case WIND_ID:	for (int i = 0; i < 14; i++) {
-		if (tabelle.mtTagArray[i].getWind() == STARK)
+		if (tabelle.mtTagVector->at(i).getWind() == STARK)
 
 		{
-			tagarr[k] = tabelle.mtTagArray[i];
+			tagarr.push_back(tabelle.mtTagVector->at(i));
 			k++;
 			cout << "-----" << endl;
 		}
 	}	break;
 	case AUSBLICK_ID:for (int i = 0; i < 14; i++) {
-		if (tabelle.mtTagArray[i].getAusblick() == SONNIG)
+		if (tabelle.mtTagVector->at(i).getAusblick() == SONNIG)
 		{
-			tagarr[k] = tabelle.mtTagArray[i];
+			tagarr.push_back(tabelle.mtTagVector->at(i));
 			k++;
 			cout << "-----" << endl;
 		}
@@ -75,11 +75,12 @@ void main() {
 	default:break;
 	}
 
-	tabelle.setNewTraininsgdaten(tagarr);
+	tabelle.SubSetTraininsgdaten(&tagarr);
 	
-	for (int i = 0; i < k; i++) 
-		tabelle.mtTagArray[i].tagAusgabe();
-
+	for (int i = 0; i < k; i++)
+		tabelle.mtTagVector->at(i).tagAusgabe();
+	
+	cout << tabelle.mtTagVector->size() << endl;
 	
 	//cin.ignore(1);
 	

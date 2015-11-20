@@ -2,16 +2,11 @@
 
 
 
-Traininsgdaten::Traininsgdaten()
-{
+Traininsgdaten::Traininsgdaten(){}
 
-}
-Traininsgdaten::~Traininsgdaten()
-{
-	delete[] mtTagArray;
-	
-}
+Traininsgdaten::~Traininsgdaten(){}
 
+/*
 void Traininsgdaten::traininsgdatenLesen() {
 	traininsgdatenListe();
 	mtTagArray = new Tag[mtTagVector->size()];
@@ -21,7 +16,9 @@ void Traininsgdaten::traininsgdatenLesen() {
 			mtTagArray[i] = mtTagVector->at(i);
 			}
 }
-void Traininsgdaten::traininsgdatenListe() {
+*/
+
+void Traininsgdaten::traininsgdatenLesen() {
 	mtTagVector = new vector<Tag> {
 		//	 (sAusblik, iTemp, iLuft,bWwind,  bSpiel)
 		/*D1*/{ SONNIG,  HEISS, HOCH,   SCHWACH, NICHT_SPIELEN },
@@ -44,7 +41,7 @@ void Traininsgdaten::traininsgdatenListe() {
 	
 }
 
-void Traininsgdaten::setNewTraininsgdaten(Tag *tArra) {
-	delete[] mtTagArray;
-	mtTagArray = tArra;
+void Traininsgdaten::SubSetTraininsgdaten(vector<Tag> *arrVec) {
+	
+	mtTagVector = arrVec;
 }

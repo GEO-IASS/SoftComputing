@@ -6,25 +6,19 @@
 class Traininsgdaten 
 {
 public:
-	Tag *mtTagArray;
+	
 	vector<Tag> *mtTagVector;
 	Traininsgdaten();
 	~Traininsgdaten();
 
 	void traininsgdatenLesen();
-	void traininsgdatenListe();
 
-	void setNewTraininsgdaten(Tag * tArra);
+	void SubSetTraininsgdaten(vector<Tag>* tArra);
 
-	
 
 	
 
-	
-
-	
-
-	
+		
 	
 };
 
