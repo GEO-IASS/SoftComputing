@@ -6,7 +6,8 @@
 int Tag::miTagCounter = 0;
 
 
-vector<Tag> tagVektor;
+
+void splitTraininsgdaten(int attribut, Traininsgdaten *tD);
 
 void main() {
 		
@@ -44,50 +45,45 @@ void main() {
 
 	
 
-	vector<Tag> tagarr;
+	
 	
 	///-----!----Kleine Sortierung --->TESTEN NACH Attributs ----!----------	
 	// hier ist nur beispiels
-	int k = 0;
-
-	int AttributID = AUSBLICK_ID; //Hier die IDs  einsetzten siehe Defines.h
-
-	switch (AttributID)
-	{
-	case WIND_ID:	for (int i = 0; i < 14; i++) {
-		if (tabelle.mtTagVector->at(i).getWind() == STARK)
-
-		{
-			tagarr.push_back(tabelle.mtTagVector->at(i));
-			k++;
-			cout << "-----" << endl;
-		}
-	}	break;
-	case AUSBLICK_ID:for (int i = 0; i < 14; i++) {
-		if (tabelle.mtTagVector->at(i).getAusblick() == SONNIG)
-		{
-			tagarr.push_back(tabelle.mtTagVector->at(i));
-			k++;
-			cout << "-----" << endl;
-		}
-
-	}  break;
-	default:break;
-	}
-
-	tabelle.SubSetTraininsgdaten(&tagarr);
 	
-	for (int i = 0; i < k; i++)
+
+	
+
+
+	
+
+	splitTraininsgdaten(AUSBLICK_ID, &tabelle);
+	
+	for (int i = 0; i < tabelle.mtTagVector->size(); i++)
 		tabelle.mtTagVector->at(i).tagAusgabe();
 	
 	cout << tabelle.mtTagVector->size() << endl;
+	cout << "Info: " << "\t\t" << berechneInfo(AUSBLICK_ID, &tabelle) << endl;
 	
 	//cin.ignore(1);
 	
 }//END OF MAIN
+vector<Tag> tagarr;
 
-
-
+ void splitTraininsgdaten(int attribut, Traininsgdaten *tD) {
+	 
+	 
+	 int size = tD->mtTagVector->size();
+	
+	 switch (attribut)
+	 {
+	 
+	 case AUSBLICK_ID:for (int i = 0; i < size; i++) {
+		 if (tD->mtTagVector->at(i).getAusblick() == REGEN)
+			 tagarr.push_back(tD->mtTagVector->at(i));
+			 }  tD->SubSetTraininsgdaten(&tagarr); break;
+	
+  }//end Switch
+}
 
 
 
