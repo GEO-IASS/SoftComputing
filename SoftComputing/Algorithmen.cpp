@@ -1,7 +1,7 @@
 #include "Traininsgdaten.h"
 #define ANZAHLDATEN      tDaten->mtTagVector->size()
 
-vector<Tag> tagVektor;
+
 
 
 
@@ -260,31 +260,33 @@ double sucheBesteAtrribut(Traininsgdaten *tDaten) {
 
 	vector<double> besteAttribut;
 
-	for (int attribut=AUSBLICK_ID; attribut <= WIND_ID; attribut=attribut+AUSBLICK_ID) {
+	//for (int attribut=AUSBLICK_ID; attribut <= WIND_ID; attribut=attribut+AUSBLICK_ID) {
 		/*Nur Vorubegehend bis TEMPERATUR nicht implemetiert*/
-		if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
-		
-		besteAttribut.push_back(berechneGainRatio(attribut, tDaten));
-	}
-	
-	//if (berechneGainRatio(i, tDaten) > berechneGainRatio(WIND_ID, tDaten))
-	//	besteAttribut = "Ausblick";
-	//else
-	//	besteAttribut = "Wind";
+		//if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
+		//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
+	besteAttribut.push_back(berechneGainRatio(AUSBLICK_ID, tDaten));
+	besteAttribut.push_back(berechneGainRatio(WIND_ID, tDaten));
+	besteAttribut.push_back(berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten));
 
 	return  sucheMaximum(besteAttribut);
 }
 
 
 void teilenTraininsgdaten(int attribut, Traininsgdaten *tD) {
+	vector<Tag> *tagVektor = new vector<Tag>;
 	
 	int size = tD->mtTagVector->size();
 	switch (attribut)
 	{
 	case AUSBLICK_ID:for (int i = 0; i < size; i++) {
-		if (tD->mtTagVector->at(i).getAusblick() == REGEN)
-			tagVektor.push_back(tD->mtTagVector->at(i));
-	}  tD->SubSetTraininsgdaten(&tagVektor); break;
+		if (tD->mtTagVector->at(i).getAusblick() == SONNIG)
+			tagVektor->push_back(tD->mtTagVector->at(i));
+	}  tD->SubSetTraininsgdaten(tagVektor); break;
+
+	case LUFTFEUCHTIGKEIT_ID:for (int i = 0; i < size; i++) {
+		if (tD->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL)
+			tagVektor->push_back(tD->mtTagVector->at(i));
+	}  tD->SubSetTraininsgdaten(tagVektor); break;
 	
 	}//end Switch
 }

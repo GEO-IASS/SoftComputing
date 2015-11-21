@@ -12,6 +12,7 @@ public:
 	~Traininsgdaten();
 
 	void traininsgdatenLesen();
+	
 
 	void SubSetTraininsgdaten(vector<Tag>* tArra);
 
