@@ -14,7 +14,9 @@ double berechneInfoWindy(Traininsgdaten *tD);
 double berechneInfoLuft(Traininsgdaten *tDaten);
 double splitInfoOutlook(Traininsgdaten *tD);
 double splitInfoWindy(Traininsgdaten *tD);
-string sucheBesteAtrribut(Traininsgdaten *tD);
+
+double sucheMaximum(vector<double> vector);
+double sucheBesteAtrribut(Traininsgdaten *tD);
 
 double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneGain(int Attribute, Traininsgdaten *traininsgdaten);

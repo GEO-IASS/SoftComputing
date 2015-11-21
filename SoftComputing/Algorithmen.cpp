@@ -57,7 +57,8 @@ double berechneInfoOutlook(Traininsgdaten *tDaten) {
 	if (A_r == 0) A_r = 1;
 	if (B_r == 0) B_r = 1;
 
-	return -(T_s*(A_s*log2(A_s) + B_s*log2(B_s))) - (T_o*(A_o*log2(A_o) + B_o*log2(B_o))) - (T_r*(A_r*log2(A_r) + B_r*log2(B_r)));
+	double toreturn = -(T_s*(A_s*log2(A_s) + B_s*log2(B_s))) - (T_o*(A_o*log2(A_o) + B_o*log2(B_o))) - (T_r*(A_r*log2(A_r) + B_r*log2(B_r)));
+	return toreturn;
 
 }
 //-----------------------------------------
@@ -89,26 +90,26 @@ double berechneInfoWindy(Traininsgdaten *tDaten) {
 //-----------------------------------------
 double berechneInfoLuft(Traininsgdaten *tDaten) {
 
-	double stark_y = 0, schwach_y = 0, stark_n = 0, schwach_n = 0, stark_sum = 0, schwach_sum = 0;
+	double hoch_y = 0, normal_y = 0, hoch_n = 0, normal_n = 0, hoch_sum = 0, normal_sum = 0;
 	double summe = 0;
 
 	for (int j = 0; j < ANZAHLDATEN; j++) {
-		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == HOCH) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) stark_y++;
-		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == HOCH) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) stark_n++;
-		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == NORMAL) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) schwach_y++;
-		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == NORMAL) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) schwach_n++;
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == HOCH) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) hoch_y++;
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == HOCH) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) hoch_n++;
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == NORMAL) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) normal_y++;
+		if ((tDaten->mtTagVector->at(j).getLuftfeuchtigkeit() == NORMAL) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) normal_n++;
 	}
 
-	stark_sum = stark_y + stark_n;
-	schwach_sum = schwach_y + schwach_n;
-	summe = stark_sum + schwach_sum;
+	hoch_sum = hoch_y + hoch_n;
+	normal_sum = normal_y + normal_n;
+	summe = hoch_sum + normal_sum;
 
-	double A_h = stark_y / stark_sum;		if (A_h == 0) A_h = 1;
-	double B_h = stark_n / stark_sum;		if (B_h == 0) B_h = 1;
-	double A_l = schwach_y / schwach_sum;	if (A_l == 0) A_l = 1;
-	double B_l = schwach_n / schwach_sum;	if (B_l == 0) B_l = 1;
-	double T_h = stark_sum / summe;
-	double T_l = schwach_sum / summe;
+	double A_h = hoch_y / hoch_sum;		if (A_h == 0) A_h = 1;
+	double B_h = hoch_n / hoch_sum;		if (B_h == 0) B_h = 1;
+	double A_l = normal_y / normal_sum;	if (A_l == 0) A_l = 1;
+	double B_l = normal_n / normal_sum;	if (B_l == 0) B_l = 1;
+	double T_h = hoch_sum / summe;
+	double T_l = normal_sum / summe;
 
 	return -(T_h*(A_h*log2(A_h) + B_h*log2(B_h))) - (T_l*(A_l*log2(A_l) + B_l*log2(B_l)));
 }
@@ -144,8 +145,22 @@ double splitInfoWindy(Traininsgdaten *tDaten) {
 
 	return -(A*log2(A) + B*log2(B));
 }
-
 //-----------------------------------------
+double splitInfoLuft(Traininsgdaten *tDaten) {
+
+	double summe = 0, hoch = 0, normal = 0;
+	for (int i = 0; i < ANZAHLDATEN; i++) {
+		if (tDaten->mtTagVector->at(i).getLuftfeuchtigkeit() == HOCH) hoch++;
+		if (tDaten->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL) normal++;
+	}
+
+	summe = normal + hoch;
+	double A = hoch / summe;
+	double B = normal / summe;
+
+	return -(A*log2(A) + B*log2(B));
+}
+
 //------------------AllgemeinAlgorithmenFürRekursion-----------------------
 
 double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten) {
@@ -199,7 +214,9 @@ double berechneSplitInfo(int Attribute, Traininsgdaten *traininsgdaten) {
 	case WIND_ID:
 		rueckgabeVariable = splitInfoWindy(traininsgdaten);;
 		break;
-		/*UND So Weiter für Andere Attribute falls nöitg*/
+	case LUFTFEUCHTIGKEIT_ID:
+		rueckgabeVariable = splitInfoLuft(traininsgdaten);;
+		break;
 	}
 	return rueckgabeVariable;
 
@@ -212,35 +229,50 @@ double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten) {
 	{
 	case AUSBLICK_ID:
 		rueckgabeVariable = 
-		rueckgabeVariable = berechneGain (Attribute,  traininsgdaten) / splitInfoOutlook(traininsgdaten);
+		rueckgabeVariable = berechneGain (Attribute,  traininsgdaten) /berechneSplitInfo(Attribute,traininsgdaten);
 		break;
 	case WIND_ID:
-		rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / splitInfoWindy(traininsgdaten);
+		rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / berechneSplitInfo(Attribute, traininsgdaten);
 		break;
-		/*UND So Weiter für Andere Attribute falls nöitg*/
+	case LUFTFEUCHTIGKEIT_ID:
+		rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / berechneSplitInfo(Attribute, traininsgdaten);
+		break;
+		//UND So Weiter für Andere Attribute falls nöitg
 	}
 	return rueckgabeVariable;
 
 }
 //-----------------------------------------
-string sucheBesteAtrribut(Traininsgdaten *tDaten) {
-	//	Das ist der Gewinn an Informationsgehalt durch das Attribut X.
-	//Ranking zwischen Attributen möglich
-	//Was will man dadurch erreichen ? Möglichst kleine Entscheidungsbäume, so dass Beispiele schon nach einigen Fragen identifiziert werden können
-	//berechneGain(); 
-	//Let  D be the attribute with largest Gain(D,S) among attributes in R;
-	//je große Gain desto besser -->> mehr Zunahme an Informationsgehalt !
-	//return  besteAttribut
+double sucheMaximum(vector<double> vector) {
+	double max = vector.at(0);
+	for (int i = 1; i < vector.size(); i++) {
+		if (max < vector.at(i)) max = vector.at(i);
+	}
+	return max;
+}
 
+double sucheBesteAtrribut(Traininsgdaten *tDaten) {
+		//Der C4.5 - Algorithmus ist eine Spezialisierung von
+		//Algorithmus 3.1, bei der die Relation “besser” f¨ur die Attributauswahl auf dem sogenannten normierten Iformationsgewinn GainRation
+		// Das ist der Gewinn an Informationsgehalt durch das Attribut X.
+		//Ranking zwischen Attributen möglich
+		//Was will man dadurch erreichen ? Möglichst kleine Entscheidungsbäume, so dass Beispiele schon nach einigen Fragen identifiziert werden können
 
-	string besteAttribut;
+	vector<double> besteAttribut;
 
-	if (berechneGain(AUSBLICK_ID, tDaten) > berechneGain(WIND_ID, tDaten))
-		besteAttribut = "Ausblick";
-	else
-		besteAttribut = "Wind";
+	for (int attribut=AUSBLICK_ID; attribut <= WIND_ID; attribut=attribut+AUSBLICK_ID) {
+		/*Nur Vorubegehend bis TEMPERATUR nicht implemetiert*/
+		if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
+		
+		besteAttribut.push_back(berechneGainRatio(attribut, tDaten));
+	}
+	
+	//if (berechneGainRatio(i, tDaten) > berechneGainRatio(WIND_ID, tDaten))
+	//	besteAttribut = "Ausblick";
+	//else
+	//	besteAttribut = "Wind";
 
-	return  besteAttribut;
+	return  sucheMaximum(besteAttribut);
 }
 
 
@@ -250,7 +282,7 @@ void teilenTraininsgdaten(int attribut, Traininsgdaten *tD) {
 	switch (attribut)
 	{
 	case AUSBLICK_ID:for (int i = 0; i < size; i++) {
-		if (tD->mtTagVector->at(i).getAusblick() == SONNIG)
+		if (tD->mtTagVector->at(i).getAusblick() == REGEN)
 			tagVektor.push_back(tD->mtTagVector->at(i));
 	}  tD->SubSetTraininsgdaten(&tagVektor); break;
 	

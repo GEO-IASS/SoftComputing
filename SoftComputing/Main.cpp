@@ -22,8 +22,8 @@ void main() {
 	
 	}
 	cout << tabelle.mtTagVector->size() << endl;
-	
-	cout <<"Zielattributes: "<< "\t" << getEntropieZielattributes(&tabelle)<< endl;
+	/*
+	cout <<"Zielattributes: "<< "\t" <<		getEntropieZielattributes(&tabelle)<< endl;
 	cout << "InfoOutlook: " <<	"\t\t"<<	berechneInfo(AUSBLICK_ID, &tabelle) << endl;
 	cout << "GainOutlook: " << "\t\t" <<	berechneGain(AUSBLICK_ID, &tabelle) << endl;
 	cout << "SplitInfoOutlook: " << "\t" << berechneSplitInfo(AUSBLICK_ID, &tabelle) << endl;
@@ -31,8 +31,8 @@ void main() {
 	cout << "InfoWindy: " << "\t\t" <<		berechneInfo(WIND_ID, &tabelle) << endl;
 	cout << "GainWindy: " << "\t\t" <<		berechneGain(WIND_ID, &tabelle) << endl;
 	cout << "SplitInfoWindy: " << "\t" <<	berechneSplitInfo(WIND_ID, &tabelle) << endl;
-	cout << "GainRatioWindy: " << "\t" <<	berechneGainRatio(WIND_ID, &tabelle) << endl;
-	cout << "Bestes Atribut: " << "\t"<<	sucheBesteAtrribut(&tabelle) << endl ; // Nach gain gewählt siehe code
+	cout << "GainRatioWindy: " << "\t" <<	berechneGainRatio(WIND_ID, &tabelle) << endl;*/
+	//cout << "Bestes Atribut: " << "\t"<<	sucheBesteAtrribut(&tabelle) << endl ; // Nach gainratio gewählt siehe code
 	cout << "------------" << endl;
 
 
@@ -47,9 +47,10 @@ void main() {
 		tabelle.mtTagVector->at(i).tagAusgabe();
 	
 	cout << tabelle.mtTagVector->size() << endl;
-	cout << "InfoLuft: " << "\t\t" << berechneGain(LUFTFEUCHTIGKEIT_ID, &tabelle) << endl;
-	cout << "InfoWindy: " << "\t\t" << berechneGain(WIND_ID,&tabelle) << endl;
-	cout << setw(7) << "s" << endl;
+	cout << "GainRatioSonnig: " << "\t\t"<<berechneGainRatio(AUSBLICK_ID, &tabelle) << endl;
+	cout << "GainRatioLuft: " << "\t\t" <<berechneGainRatio(LUFTFEUCHTIGKEIT_ID, &tabelle) << endl;
+	cout << "GainRatioWindy: " << "\t\t"<<berechneGainRatio(WIND_ID,&tabelle) << endl;
+	cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(&tabelle) << endl; // Nach gainratio gewählt siehe code
 	//cin.ignore(1);
 	
 }//END OF MAIN
