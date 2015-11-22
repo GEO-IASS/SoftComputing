@@ -52,9 +52,9 @@ void main() {
 
 		//cout << b.miAttributID;
 
-		int hhh= sucheBesteAtrribut(5000, &tabelle).miAttributID;
+	//	int hhh= sucheBesteAtrribut(5000, &tabelle).miAttributID;
 		
-		machBinaerbaum(hhh,&tabelle);
+		machBinaerbaum(AUSBLICK_ID,&tabelle);
 	
 
 
