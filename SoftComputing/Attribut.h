@@ -12,6 +12,11 @@ public:
 	bool	  mbWind;
 	bool	  mbSpiel;   // Zielattribut 
 
+	int		  miAttributID;
+	double	  mdAttributEntropie;
+	
+	
+
 	Attribut();
 	~Attribut();
 };

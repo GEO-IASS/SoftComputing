@@ -19,6 +19,7 @@ void Traininsgdaten::traininsgdatenLesen() {
 */
 
 void Traininsgdaten::traininsgdatenLesen() {
+	
 	mtTagVector = new vector<Tag> {
 		//	 (sAusblik, iTemp, iLuft,bWwind,  bSpiel)
 		/*D1*/{ SONNIG,  HEISS, HOCH,   SCHWACH, NICHT_SPIELEN },

@@ -15,6 +15,7 @@ private:
 
 public:	
 	Attribut maAttribut;
+	
 	Tag(string sAusbl, int iLuft, int iTemp, bool bWwind, bool bSpiel);
 	Tag();
 	~Tag();

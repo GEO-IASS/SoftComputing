@@ -243,51 +243,92 @@ double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten) {
 
 }
 //-----------------------------------------
-double sucheMaximum(vector<double> vector) {
-	double max = vector.at(0);
-	for (int i = 1; i < vector.size(); i++) {
-		if (max < vector.at(i)) max = vector.at(i);
+double sucheMaximum(Attribut vector[]) {
+	
+	double max = vector[0].mdAttributEntropie;
+	
+	for (int i = 1; i < 3; i++) {
+		if (max < vector[i].mdAttributEntropie)
+			max = vector[i].mdAttributEntropie;
 	}
 	return max;
 }
 
-double sucheBesteAtrribut(int blockAttribut ,Traininsgdaten *tDaten) {
-		//Der C4.5 - Algorithmus ist eine Spezialisierung von
-		//Algorithmus 3.1, bei der die Relation “besser” f¨ur die Attributauswahl auf dem sogenannten normierten Iformationsgewinn GainRation
-		// Das ist der Gewinn an Informationsgehalt durch das Attribut X.
-		//Ranking zwischen Attributen möglich
-		//Was will man dadurch erreichen ? Möglichst kleine Entscheidungsbäume, so dass Beispiele schon nach einigen Fragen identifiziert werden können
+double sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten) {
+	//Der C4.5 - Algorithmus ist eine Spezialisierung von
+	//Algorithmus 3.1, bei der die Relation “besser” f¨ur die Attributauswahl auf dem sogenannten normierten Iformationsgewinn GainRation
+	// Das ist der Gewinn an Informationsgehalt durch das Attribut X.
+	//Ranking zwischen Attributen möglich
+	//Was will man dadurch erreichen ? Möglichst kleine Entscheidungsbäume, so dass Beispiele schon nach einigen Fragen identifiziert werden können
 
-	vector<double> besteAttribut;
+
+	Attribut besteAttribut[3];
+
+
 
 	//for (int attribut=AUSBLICK_ID; attribut <= WIND_ID; attribut=attribut+AUSBLICK_ID) {
-		/*Nur Vorubegehend bis TEMPERATUR nicht implemetiert*/
-		//if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
-		//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
-	
-		/*    blockAttribut wird dann nicht berechnet */
-	if (blockAttribut!= AUSBLICK_ID)
-		besteAttribut.push_back(berechneGainRatio(AUSBLICK_ID, tDaten));
-	besteAttribut.push_back(berechneGainRatio(WIND_ID, tDaten));
-	besteAttribut.push_back(berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten));
+	/*Nur Vorubegehend bis TEMPERATUR nicht implemetiert*/
+	//if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
+	//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
 
-	return  sucheMaximum(besteAttribut);
+	/*    blockAttribut wird dann nicht berechnet */
+	
+		besteAttribut[0].mdAttributEntropie = berechneGainRatio(AUSBLICK_ID, tDaten);
+		besteAttribut[0].miAttributID = AUSBLICK_ID;
+	
+	
+		besteAttribut[1].mdAttributEntropie = berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten);
+		besteAttribut[1].miAttributID = LUFTFEUCHTIGKEIT_ID;
+	
+	
+		besteAttribut[2].mdAttributEntropie = berechneGainRatio(WIND_ID, tDaten);
+		besteAttribut[2].miAttributID = WIND_ID;
+
+
+		
+
+			return  sucheMaximum(besteAttribut);
 }
 
-
-void teilenTraininsgdaten(int attribut, Traininsgdaten *tD) {
+void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 	vector<Tag> *tagVektor = new vector<Tag>;
 	
 	int size = tD->mtTagVector->size();
 	switch (attribut)
 	{
-	case AUSBLICK_ID:for (int i = 0; i < size; i++) {
-		if (tD->mtTagVector->at(i).getAusblick() == SONNIG)
+	case AUSBLICK_ID:
+		if (AttributWert == 1000) {
+			for (int i = 0; i < size; i++) {
+				if (tD->mtTagVector->at(i).getAusblick() == SONNIG)
+					tagVektor->push_back(tD->mtTagVector->at(i));
+			}  tD->SubSetTraininsgdaten(tagVektor);
+		}
+
+		if (AttributWert == 2000) {
+			for (int i = 0; i < size; i++) {
+				if (tD->mtTagVector->at(i).getAusblick() == REGEN)
+					tagVektor->push_back(tD->mtTagVector->at(i));
+			}  tD->SubSetTraininsgdaten(tagVektor);
+		}
+
+		if (AttributWert == 3000) {
+			for (int i = 0; i < size; i++) {
+				if (tD->mtTagVector->at(i).getAusblick() == BEWOELKT)
+					tagVektor->push_back(tD->mtTagVector->at(i));
+			}  tD->SubSetTraininsgdaten(tagVektor);
+		}
+
+
+		break;
+
+	case LUFTFEUCHTIGKEIT_ID:for (int i = 0; i < size; i++) {
+		if (tD->mtTagVector->at(i).getLuftfeuchtigkeit() == HOCH)
 			tagVektor->push_back(tD->mtTagVector->at(i));
 	}  tD->SubSetTraininsgdaten(tagVektor); break;
 
-	case LUFTFEUCHTIGKEIT_ID:for (int i = 0; i < size; i++) {
-		if (tD->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL)
+
+	case WIND_ID:for (int i = 0; i < size; i++) {
+		if (tD->mtTagVector->at(i).getWind() == SCHWACH)
 			tagVektor->push_back(tD->mtTagVector->at(i));
 	}  tD->SubSetTraininsgdaten(tagVektor); break;
 	
@@ -307,17 +348,20 @@ void machBinaerbaum(int besteAttribut, Traininsgdaten *tD) {
 	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
 	cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(Wuerzel, tD) << endl; // Nach gainratio gewählt siehe code
 	cout << "------------" << endl;
-	
-	teilenTraininsgdaten(AUSBLICK_ID, tD);
-	
-	for (int i = 0; i < tD->mtTagVector->size(); i++)
-		tD->mtTagVector->at(i).tagAusgabe();
+	//
+	//teilenTraininsgdaten(AUSBLICK_ID, 3000, tD);
+	//
+	//for (int i = 0; i < tD->mtTagVector->size(); i++)
+	//	tD->mtTagVector->at(i).tagAusgabe();
 
-	cout << tD->mtTagVector->size() << endl;
-	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
-	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
-	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
-	cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(Wuerzel,tD) << endl; // Nach gainratio gewählt siehe code
-	cout << "------------" << endl;
+	//cout << tD->mtTagVector->size() << endl;
+	//cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
+	//cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
+	//cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
+	//cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(Wuerzel,tD) << endl; // Nach gainratio gewählt siehe code
+	//cout << "------------" << endl;
+
+
+	
 
 }

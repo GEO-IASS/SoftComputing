@@ -38,22 +38,12 @@ void main() {
 	//cout << "------------" << endl;
 
 	
-
-
+		
+		
+	
 	machBinaerbaum(AUSBLICK_ID, &tabelle);
-	//
-	//teilenTraininsgdaten(LUFTFEUCHTIGKEIT_ID, &tabelle);
-
-	//for (int i = 0; i < tabelle.mtTagVector->size(); i++)
-	//	tabelle.mtTagVector->at(i).tagAusgabe();
-
-	//cout << tabelle.mtTagVector->size() << endl;
-	//cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, &tabelle) << endl;
-	//cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, &tabelle) << endl;
-	//cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, &tabelle) << endl;
-	////cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(&tabelle) << endl; // Nach gainratio gewählt siehe code
-	//cout << "------------" << endl;
-
+	
+	
 	//cin.ignore(1);
 	
 }//END OF MAIN

@@ -15,7 +15,7 @@ double berechneInfoLuft(Traininsgdaten *tDaten);
 double splitInfoOutlook(Traininsgdaten *tD);
 double splitInfoWindy(Traininsgdaten *tD);
 
-double sucheMaximum(vector<double> vector);
+//double sucheMaximum(vector<double> vector);
 double sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten);
 
 double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten);
@@ -23,7 +23,7 @@ double berechneGain(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneSplitInfo(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten);
 
-void teilenTraininsgdaten(int attribut, Traininsgdaten *tD);
+void teilenTraininsgdaten(int attribut, int attributWert, Traininsgdaten *tD);
 
 void machBinaerbaum(int besteAttribut, Traininsgdaten *tD);
 
