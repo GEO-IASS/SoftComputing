@@ -15,9 +15,11 @@ public:
 	int		  miAttributID;
 	double	  mdAttributEntropie;
 	
+	void setmiAttributID(int ID);
+	void setmdAttributEntropie(double entropie);
 	
-
 	Attribut();
+	Attribut(int ID, double Entropie);
 	~Attribut();
 };
 

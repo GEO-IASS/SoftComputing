@@ -6,7 +6,7 @@
 #include "Defines.h"
 #include <cmath>
 
-
+void wurzelAusgabe(Attribut b);
 
 double getEntropieZielattributes(Traininsgdaten *tD);
 double berechneInfoOutlook(Traininsgdaten *tD);
@@ -16,7 +16,7 @@ double splitInfoOutlook(Traininsgdaten *tD);
 double splitInfoWindy(Traininsgdaten *tD);
 
 //double sucheMaximum(vector<double> vector);
-double sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten);
+Attribut sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten);
 
 double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneGain(int Attribute, Traininsgdaten *traininsgdaten);

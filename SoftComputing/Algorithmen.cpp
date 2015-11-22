@@ -1,4 +1,5 @@
 #include "Traininsgdaten.h"
+#include "Algorithmen.h"
 #define ANZAHLDATEN      tDaten->mtTagVector->size()
 
 
@@ -243,18 +244,18 @@ double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten) {
 
 }
 //-----------------------------------------
-double sucheMaximum(Attribut vector[]) {
+Attribut sucheMaximum(vector <Attribut> vector) {
 	
-	double max = vector[0].mdAttributEntropie;
+	Attribut max (vector[0].miAttributID, vector[0].mdAttributEntropie);
 	
 	for (int i = 1; i < 3; i++) {
-		if (max < vector[i].mdAttributEntropie)
-			max = vector[i].mdAttributEntropie;
+		if (max.mdAttributEntropie < vector[i].mdAttributEntropie)
+			max.mdAttributEntropie = vector[i].mdAttributEntropie;
 	}
 	return max;
 }
 
-double sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten) {
+Attribut sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten) {
 	//Der C4.5 - Algorithmus ist eine Spezialisierung von
 	//Algorithmus 3.1, bei der die Relation “besser” f¨ur die Attributauswahl auf dem sogenannten normierten Iformationsgewinn GainRation
 	// Das ist der Gewinn an Informationsgehalt durch das Attribut X.
@@ -262,33 +263,40 @@ double sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten) {
 	//Was will man dadurch erreichen ? Möglichst kleine Entscheidungsbäume, so dass Beispiele schon nach einigen Fragen identifiziert werden können
 
 
-	Attribut besteAttribut[3];
+	vector<Attribut> besteAttributVector;
+	
 
+	Attribut besteAttribut;
 
 
 	//for (int attribut=AUSBLICK_ID; attribut <= WIND_ID; attribut=attribut+AUSBLICK_ID) {
-	/*Nur Vorubegehend bis TEMPERATUR nicht implemetiert*/
+	//Nur Vorubegehend bis TEMPERATUR nicht implemetiert
 	//if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
 	//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
 
-	/*    blockAttribut wird dann nicht berechnet */
+	////    blockAttribut wird dann nicht berechnet 
 	
-		besteAttribut[0].mdAttributEntropie = berechneGainRatio(AUSBLICK_ID, tDaten);
-		besteAttribut[0].miAttributID = AUSBLICK_ID;
+	besteAttribut.setmdAttributEntropie( berechneGainRatio(AUSBLICK_ID, tDaten));
+	besteAttribut.setmiAttributID(AUSBLICK_ID);
+	besteAttributVector.push_back(besteAttribut);
+
+	besteAttribut.setmdAttributEntropie(berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten));
+	besteAttribut.setmiAttributID(LUFTFEUCHTIGKEIT_ID);
+	besteAttributVector.push_back(besteAttribut);
+
+	besteAttribut.setmdAttributEntropie(berechneGainRatio(WIND_ID, tDaten));
+	besteAttribut.setmiAttributID(WIND_ID);
+	besteAttributVector.push_back(besteAttribut);
+
 	
-	
-		besteAttribut[1].mdAttributEntropie = berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten);
-		besteAttribut[1].miAttributID = LUFTFEUCHTIGKEIT_ID;
-	
-	
-		besteAttribut[2].mdAttributEntropie = berechneGainRatio(WIND_ID, tDaten);
-		besteAttribut[2].miAttributID = WIND_ID;
 
 
 		
 
-			return  sucheMaximum(besteAttribut);
+			return  sucheMaximum(besteAttributVector);
 }
+
+
 
 void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 	vector<Tag> *tagVektor = new vector<Tag>;
@@ -335,6 +343,8 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 	}//end Switch
 }
 
+
+
 void machBinaerbaum(int besteAttribut, Traininsgdaten *tD) {
 	
 	int Wuerzel =  besteAttribut;
@@ -346,22 +356,26 @@ void machBinaerbaum(int besteAttribut, Traininsgdaten *tD) {
 	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
 	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
 	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
-	cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(Wuerzel, tD) << endl; // Nach gainratio gewählt siehe code
+	cout << "Bestes Atribut: " << "\t";  wurzelAusgabe(sucheBesteAtrribut(Wuerzel, tD));
 	cout << "------------" << endl;
-	//
-	//teilenTraininsgdaten(AUSBLICK_ID, 3000, tD);
-	//
-	//for (int i = 0; i < tD->mtTagVector->size(); i++)
-	//	tD->mtTagVector->at(i).tagAusgabe();
+	
+	teilenTraininsgdaten(AUSBLICK_ID, 1000, tD);
+	
+	for (int i = 0; i < tD->mtTagVector->size(); i++)
+		tD->mtTagVector->at(i).tagAusgabe();
 
-	//cout << tD->mtTagVector->size() << endl;
-	//cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
-	//cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
-	//cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
-	//cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(Wuerzel,tD) << endl; // Nach gainratio gewählt siehe code
-	//cout << "------------" << endl;
+	cout << tD->mtTagVector->size() << endl;
+	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
+	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
+	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
+	cout << "Bestes Atribut: " << "\t"; wurzelAusgabe(sucheBesteAtrribut(Wuerzel, tD)); // Nach gainratio gewählt siehe code
+	cout << "------------" << endl;
 
 
 	
 
+}
+
+void wurzelAusgabe(Attribut b) {
+	cout << b.mdAttributEntropie << "|" << b.miAttributID << endl;
 }

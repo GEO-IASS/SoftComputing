@@ -38,11 +38,26 @@ void main() {
 	//cout << "------------" << endl;
 
 	
+		Attribut b;
+		vector <Attribut> a;
+		//Attribut *b;
+		//b = new Attribut (AUSBLICK_ID, 0.23);
 		
+		b.setmiAttributID(AUSBLICK_ID);
+		b.setmdAttributEntropie(0.123);
+		a.push_back(b);
 		
+
+		wurzelAusgabe(a.at(0));
+
+		//cout << b.miAttributID;
+
+		int hhh= sucheBesteAtrribut(5000, &tabelle).miAttributID;
+		
+		machBinaerbaum(hhh,&tabelle);
 	
-	machBinaerbaum(AUSBLICK_ID, &tabelle);
-	
+
+
 	
 	//cin.ignore(1);
 	
