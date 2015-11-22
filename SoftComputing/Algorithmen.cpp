@@ -251,7 +251,7 @@ double sucheMaximum(vector<double> vector) {
 	return max;
 }
 
-double sucheBesteAtrribut(Traininsgdaten *tDaten) {
+double sucheBesteAtrribut(int blockAttribut ,Traininsgdaten *tDaten) {
 		//Der C4.5 - Algorithmus ist eine Spezialisierung von
 		//Algorithmus 3.1, bei der die Relation “besser” f¨ur die Attributauswahl auf dem sogenannten normierten Iformationsgewinn GainRation
 		// Das ist der Gewinn an Informationsgehalt durch das Attribut X.
@@ -264,7 +264,10 @@ double sucheBesteAtrribut(Traininsgdaten *tDaten) {
 		/*Nur Vorubegehend bis TEMPERATUR nicht implemetiert*/
 		//if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
 		//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
-	besteAttribut.push_back(berechneGainRatio(AUSBLICK_ID, tDaten));
+	
+		/*    blockAttribut wird dann nicht berechnet */
+	if (blockAttribut!= AUSBLICK_ID)
+		besteAttribut.push_back(berechneGainRatio(AUSBLICK_ID, tDaten));
 	besteAttribut.push_back(berechneGainRatio(WIND_ID, tDaten));
 	besteAttribut.push_back(berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten));
 
@@ -289,4 +292,32 @@ void teilenTraininsgdaten(int attribut, Traininsgdaten *tD) {
 	}  tD->SubSetTraininsgdaten(tagVektor); break;
 	
 	}//end Switch
+}
+
+void machBinaerbaum(int besteAttribut, Traininsgdaten *tD) {
+	
+	int Wuerzel =  besteAttribut;
+	
+	for (int i = 0; i < tD->mtTagVector->size(); i++)
+		tD->mtTagVector->at(i).tagAusgabe();
+	
+	cout << tD->mtTagVector->size() << endl;
+	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
+	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
+	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
+	cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(Wuerzel, tD) << endl; // Nach gainratio gewählt siehe code
+	cout << "------------" << endl;
+	
+	teilenTraininsgdaten(AUSBLICK_ID, tD);
+	
+	for (int i = 0; i < tD->mtTagVector->size(); i++)
+		tD->mtTagVector->at(i).tagAusgabe();
+
+	cout << tD->mtTagVector->size() << endl;
+	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
+	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
+	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
+	cout << "Bestes Atribut: " << "\t" << sucheBesteAtrribut(Wuerzel,tD) << endl; // Nach gainratio gewählt siehe code
+	cout << "------------" << endl;
+
 }
