@@ -3,7 +3,7 @@
 #define ANZAHLDATEN      tDaten->mtTagVector->size()
 
 
-
+int durchlauf = 0;
 
 
 //-----------------------------------------
@@ -17,6 +17,9 @@ double getEntropieZielattributes(Traininsgdaten *tDaten) {
 	summe = positiv + negativ;
 	double A = positiv / summe;
 	double B = negativ / summe;
+	if (A == 0) A = 1;
+	if (B == 0) B = 1;
+
 	return -(A*log2(A) + B*log2(B));
 }
 //-----------------------------------------
@@ -44,6 +47,7 @@ double berechneInfoOutlook(Traininsgdaten *tDaten) {
 	if (sunny_sum == 0) sunny_sum = 1;
 	if (overcast_sum == 0) overcast_sum = 1;
 	if (rain_sum == 0) rain_sum = 1;
+	if (summe == 0) summe = 1;
 
 	double A_s = sunny_y / sunny_sum;
 	double B_s = sunny_n / sunny_sum;
@@ -83,6 +87,10 @@ double berechneInfoWindy(Traininsgdaten *tDaten) {
 	schwach_sum = schwach_y + schwach_n;
 	summe = stark_sum + schwach_sum;
 
+	if (stark_sum == 0) stark_sum = 1;
+	if (schwach_sum == 0) schwach_sum = 1;
+	if (summe == 0) summe = 1;
+
 	double A_h = stark_y / stark_sum;		if (A_h == 0) A_h = 1;
 	double B_h = stark_n / stark_sum;		if (B_h == 0) B_h = 1;
 	double A_l = schwach_y / schwach_sum;	if (A_l == 0) A_l = 1;
@@ -108,6 +116,10 @@ double berechneInfoLuft(Traininsgdaten *tDaten) {
 	hoch_sum = hoch_y + hoch_n;
 	normal_sum = normal_y + normal_n;
 	summe = hoch_sum + normal_sum;
+	
+	if (hoch_sum == 0) hoch_sum = 1;
+	if (normal_sum == 0) normal_sum = 1;
+	if (summe == 0) summe = 1;
 
 	double A_h = hoch_y / hoch_sum;		if (A_h == 0) A_h = 1;
 	double B_h = hoch_n / hoch_sum;		if (B_h == 0) B_h = 1;
@@ -129,7 +141,8 @@ double splitInfoOutlook(Traininsgdaten *tDaten) {
 	}
 
 	summe = sunny + overcast + rain;
-	
+	if (summe == 0) summe = 1;
+
 	double A = sunny / summe;
 	double B = overcast / summe;
 	double C = rain / summe;
@@ -150,8 +163,12 @@ double splitInfoWindy(Traininsgdaten *tDaten) {
 	}
 
 	summe = schwach + stark;
+	if (summe == 0) summe = 1;
+	
 	double A = stark / summe;
 	double B = schwach / summe;
+	if (A == 0) A = 1;
+	if (B == 0) B = 1;
 
 	return -(A*log2(A) + B*log2(B));
 }
@@ -165,9 +182,14 @@ double splitInfoLuft(Traininsgdaten *tDaten) {
 	}
 
 	summe = normal + hoch;
+	if (summe == 0) summe = 1;
+	
 	double A = hoch / summe;
 	double B = normal / summe;
-
+	
+	if (A == 0) A = 1;
+	if (B == 0) B = 1;
+	
 	return -(A*log2(A) + B*log2(B));
 }
 
@@ -242,16 +264,26 @@ double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten) {
 	case AUSBLICK_ID:
 		if (teilenDurchNull == 0) { 
 			teilenDurchNull = 1; 
-		rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
+			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
 		}
 		else
 			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
 		break;
 	case WIND_ID:
-		rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / berechneSplitInfo(Attribute, traininsgdaten);
+		if (teilenDurchNull == 0) {
+			teilenDurchNull = 1;
+			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
+		}
+		else
+			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
 		break;
 	case LUFTFEUCHTIGKEIT_ID:
-		rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / berechneSplitInfo(Attribute, traininsgdaten);
+		if (teilenDurchNull == 0) {
+			teilenDurchNull = 1;
+			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
+		}
+		else
+			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
 		break;
 		//UND So Weiter für Andere Attribute falls nöitg
 	}
@@ -270,7 +302,7 @@ Attribut sucheMaximum(vector <Attribut> vector) {
 	return max;
 }
 
-Attribut sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten) {
+Attribut sucheBesteAtrribut(Traininsgdaten *tDaten) {
 	//Der C4.5 - Algorithmus ist eine Spezialisierung von
 	//Algorithmus 3.1, bei der die Relation “besser” f¨ur die Attributauswahl auf dem sogenannten normierten Iformationsgewinn GainRation
 	// Das ist der Gewinn an Informationsgehalt durch das Attribut X.
@@ -286,19 +318,19 @@ Attribut sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten) {
 	//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
 
 	////    blockAttribut wird dann nicht berechnet 
-	if (blockAttribut == AUSBLICK_ID) {
+	if (durchlauf==0) {
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(AUSBLICK_ID, tDaten));
 		besteAttribut.setmiAttributID(AUSBLICK_ID);
 		besteAttributVector.push_back(besteAttribut);
 	}
 
-	if (blockAttribut != LUFTFEUCHTIGKEIT_ID) {
+	if (durchlauf==0) {
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten));
 		besteAttribut.setmiAttributID(LUFTFEUCHTIGKEIT_ID);
 		besteAttributVector.push_back(besteAttribut);
 	}
 
-	if (blockAttribut != WIND_ID) {
+	if (durchlauf==0) {
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(WIND_ID, tDaten));
 		besteAttribut.setmiAttributID(WIND_ID);
 		besteAttributVector.push_back(besteAttribut);
@@ -308,6 +340,10 @@ Attribut sucheBesteAtrribut(int blockAttribut, Traininsgdaten *tDaten) {
 }
 
 void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
+	
+	//1000= Sonnig
+	//2000 = Regen 
+	//3000 = Bewolkt
 	vector<Tag> *tagVektor = new vector<Tag>;
 	
 	int size = tD->mtTagVector->size();
@@ -352,37 +388,28 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 	}//end Switch
 }
 
-
+int AttributWert = 0;
 
 void machBinaerbaum(int besteAttribut, Traininsgdaten *tD) {
-	
-	int Wuerzel =  besteAttribut;
-	
-	for (int i = 0; i < tD->mtTagVector->size(); i++)
-		tD->mtTagVector->at(i).tagAusgabe();
-	
-	cout << tD->mtTagVector->size() << endl;
-	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
-	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
-	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
-	cout << "Bestes Atribut: " << "\t";  wurzelAusgabe(sucheBesteAtrribut(Wuerzel, tD));
-	cout << "------------" << endl;
-	
-	teilenTraininsgdaten(AUSBLICK_ID, 1000, tD);
-	//
-	for (int i = 0; i < tD->mtTagVector->size(); i++)
-		tD->mtTagVector->at(i).tagAusgabe();
 
-	cout << tD->mtTagVector->size() << endl;
-	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
-	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
-	cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
-	cout << "Bestes Atribut: " << "\t"; wurzelAusgabe(sucheBesteAtrribut(Wuerzel, tD)); // Nach gainratio gewählt siehe code
-	cout << "------------" << endl;
-
-
+	if (AttributWert <= 3000) {
+		
+		for (int i = 0; i < tD->mtTagVector->size(); i++)
+			tD->mtTagVector->at(i).tagAusgabe();
+		cout << tD->mtTagVector->size() << endl;
+		cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
+		cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
+		cout << "GainRatioWind: " << "\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
+		cout << "Bestes Atribut: " << "\t";  wurzelAusgabe(sucheBesteAtrribut(tD));
+		cout << "------------" << endl;
+		AttributWert = AttributWert + 1000;
+		tD->traininsgdatenLesen();
+		teilenTraininsgdaten(besteAttribut, AttributWert, tD);
+	}
 	
-
+	else return;
+	//Itterative weiter
+	machBinaerbaum(besteAttribut, tD);
 }
 
 void wurzelAusgabe(Attribut b) {
