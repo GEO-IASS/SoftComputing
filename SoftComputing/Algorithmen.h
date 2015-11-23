@@ -12,19 +12,24 @@ double getEntropieZielattributes(Traininsgdaten *tD);
 double berechneInfoOutlook(Traininsgdaten *tD);
 double berechneInfoWindy(Traininsgdaten *tD);
 double berechneInfoLuft(Traininsgdaten *tDaten);
+
 double splitInfoOutlook(Traininsgdaten *tD);
 double splitInfoWindy(Traininsgdaten *tD);
-
-//double sucheMaximum(vector<double> vector);
-Attribut sucheBesteAtrribut(Traininsgdaten *tDaten);
+double splitInfoLuft(Traininsgdaten *tD);
 
 double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneGain(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneSplitInfo(int Attribute, Traininsgdaten *traininsgdaten);
 double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten);
 
+Attribut sucheMaximum(vector <Attribut> vector);
+Attribut sucheBesteAtrribut(Traininsgdaten *tDaten);
 void teilenTraininsgdaten(int attribut, int attributWert, Traininsgdaten *tD);
+void machBinaerbaum(Traininsgdaten *tD);
 
-void machBinaerbaum(int besteAttribut, Traininsgdaten *tD);
+
+
+
+void InfoAusgabe(Traininsgdaten *tD);
 
 
