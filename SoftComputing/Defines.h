@@ -21,6 +21,8 @@
 #define WIND_ID					400
 
 
+//#define AUSGABE1
+
 
 
 

@@ -7,6 +7,7 @@ int durchlauf = 0;
 int AttributWert = 1000;;
 bool stopRekursion = false;
 int wurzel;
+int test; 
 
 //-----------------------------------------
 double getEntropieZielattributes(Traininsgdaten *tDaten) {
@@ -60,6 +61,54 @@ double berechneInfoOutlook(Traininsgdaten *tDaten) {
 	double T_s = sunny_sum / summe;
 	double T_o = overcast_sum / summe;
 	double T_r = rain_sum / summe;
+
+	if (A_s == 0) A_s = 1;
+	if (B_s == 0) B_s = 1;
+	if (A_o == 0) A_o = 1;
+	if (B_o == 0) B_o = 1;
+	if (A_r == 0) A_r = 1;
+	if (B_r == 0) B_r = 1;
+
+	double toreturn = -(T_s*(A_s*log2(A_s) + B_s*log2(B_s))) - (T_o*(A_o*log2(A_o) + B_o*log2(B_o))) - (T_r*(A_r*log2(A_r) + B_r*log2(B_r)));
+	return toreturn;
+
+}
+//-----------------------------------------
+double berechneInfoTemperatur(Traininsgdaten *tDaten) {
+
+	double summe = 0;
+	double heiss_y = 0, heiss_n = 0, mild_y = 0, mild_n = 0, calt_y = 0, calt_n = 0;
+	double heiss_sum = 0, mild_sum = 0, calt_sum = 0;
+
+	for (int j = 0; j <ANZAHLDATEN; j++) {
+
+		if ((tDaten->mtTagVector->at(j).getTemperatur() == HEISS) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) heiss_y++;
+		if ((tDaten->mtTagVector->at(j).getTemperatur() == HEISS) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) heiss_n++;
+		if ((tDaten->mtTagVector->at(j).getTemperatur() == MILD) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) mild_y++;
+		if ((tDaten->mtTagVector->at(j).getTemperatur() == MILD) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) mild_n++;
+		if ((tDaten->mtTagVector->at(j).getTemperatur() == CALT) && (tDaten->mtTagVector->at(j).getSpiel() == SPIELEN)) calt_y++;
+		if ((tDaten->mtTagVector->at(j).getTemperatur() == CALT) && (tDaten->mtTagVector->at(j).getSpiel() == NICHT_SPIELEN)) calt_n++;
+	}
+
+	heiss_sum = heiss_y + heiss_n;
+	mild_sum = mild_y + mild_n;
+	calt_sum = calt_y + calt_n;
+	summe = heiss_sum + mild_sum + calt_sum;
+
+	if (heiss_sum == 0) heiss_sum = 1;
+	if (mild_sum == 0) mild_sum = 1;
+	if (calt_sum == 0) calt_sum = 1;
+	if (summe == 0) summe = 1;
+
+	double A_s = heiss_y / heiss_sum;
+	double B_s = heiss_n / heiss_sum;
+	double A_o = mild_y / mild_sum;
+	double B_o = mild_n / mild_sum;
+	double A_r = calt_y / calt_sum;
+	double B_r = calt_n / calt_sum;
+	double T_s = heiss_sum / summe;
+	double T_o = mild_sum / summe;
+	double T_r = calt_sum / summe;
 
 	if (A_s == 0) A_s = 1;
 	if (B_s == 0) B_s = 1;
@@ -156,6 +205,49 @@ double splitInfoOutlook(Traininsgdaten *tDaten) {
 	return -(A*log2(A) + B*log2(B) + C*log2(C));
 }
 //-----------------------------------------
+double splitInfoTemperatur(Traininsgdaten *tDaten) {
+
+	double summe = 0, heiss = 0, mild = 0, calt = 0;
+	for (int i = 0; i < ANZAHLDATEN; i++) {
+		if (tDaten->mtTagVector->at(i).getTemperatur() == HEISS) heiss++;
+		if (tDaten->mtTagVector->at(i).getTemperatur() == MILD) mild++;
+		if (tDaten->mtTagVector->at(i).getTemperatur() == CALT) calt++;
+	}
+
+	summe = heiss + mild + calt;
+	if (summe == 0) summe = 1;
+
+	double A = heiss / summe;
+	double B = mild / summe;
+	double C = calt / summe;
+
+	if (A == 0) A = 1;
+	if (B == 0) B = 1;
+	if (C == 0) C = 1;
+
+	return -(A*log2(A) + B*log2(B) + C*log2(C));
+}
+//-----------------------------------------
+double splitInfoLuft(Traininsgdaten *tDaten) {
+
+	double summe = 0, hoch = 0, normal = 0;
+	for (int i = 0; i < ANZAHLDATEN; i++) {
+		if (tDaten->mtTagVector->at(i).getLuftfeuchtigkeit() == HOCH) hoch++;
+		if (tDaten->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL) normal++;
+	}
+
+	summe = normal + hoch;
+	if (summe == 0) summe = 1;
+
+	double A = hoch / summe;
+	double B = normal / summe;
+
+	if (A == 0) A = 1;
+	if (B == 0) B = 1;
+
+	return -(A*log2(A) + B*log2(B));
+}
+//-----------------------------------------
 double splitInfoWindy(Traininsgdaten *tDaten) {
 
 	double summe = 0, stark = 0, schwach = 0;
@@ -175,25 +267,7 @@ double splitInfoWindy(Traininsgdaten *tDaten) {
 	return -(A*log2(A) + B*log2(B));
 }
 //-----------------------------------------
-double splitInfoLuft(Traininsgdaten *tDaten) {
 
-	double summe = 0, hoch = 0, normal = 0;
-	for (int i = 0; i < ANZAHLDATEN; i++) {
-		if (tDaten->mtTagVector->at(i).getLuftfeuchtigkeit() == HOCH) hoch++;
-		if (tDaten->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL) normal++;
-	}
-
-	summe = normal + hoch;
-	if (summe == 0) summe = 1;
-	
-	double A = hoch / summe;
-	double B = normal / summe;
-	
-	if (A == 0) A = 1;
-	if (B == 0) B = 1;
-	
-	return -(A*log2(A) + B*log2(B));
-}
 
 //------------------AllgemeinAlgorithmenFürRekursion-----------------------
 
@@ -204,6 +278,9 @@ double berechneInfo(int Attribute, Traininsgdaten *traininsgdaten) {
 	{
 	case AUSBLICK_ID:
 		rueckgabeVariable = berechneInfoOutlook(traininsgdaten);
+		break;
+	case TEMPERATUR_ID:
+		rueckgabeVariable = berechneInfoTemperatur(traininsgdaten);
 		break;
 	case WIND_ID:
 		rueckgabeVariable = berechneInfoWindy(traininsgdaten);
@@ -225,6 +302,9 @@ double berechneGain(int Attribute, Traininsgdaten *traininsgdaten) {
 	case AUSBLICK_ID:
 		rueckgabeVariable = getEntropieZielattributes(traininsgdaten) - berechneInfoOutlook(traininsgdaten);
 		break;
+	case TEMPERATUR_ID:
+		rueckgabeVariable = getEntropieZielattributes(traininsgdaten) - berechneInfoTemperatur(traininsgdaten);
+		break;
 	case WIND_ID:
 		rueckgabeVariable = getEntropieZielattributes(traininsgdaten) - berechneInfoWindy(traininsgdaten);
 		break;
@@ -244,6 +324,9 @@ double berechneSplitInfo(int Attribute, Traininsgdaten *traininsgdaten) {
 	{
 	case AUSBLICK_ID:
 		rueckgabeVariable = splitInfoOutlook(traininsgdaten);
+		break;
+	case TEMPERATUR_ID:
+		rueckgabeVariable = splitInfoTemperatur(traininsgdaten);
 		break;
 	case WIND_ID:
 		rueckgabeVariable = splitInfoWindy(traininsgdaten);;
@@ -266,6 +349,14 @@ double berechneGainRatio(int Attribute, Traininsgdaten *traininsgdaten) {
 	case AUSBLICK_ID:
 		if (teilenDurchNull == 0) { 
 			teilenDurchNull = 1; 
+			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
+		}
+		else
+			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
+		break;
+	case TEMPERATUR_ID:
+		if (teilenDurchNull == 0) {
+			teilenDurchNull = 1;
 			rueckgabeVariable = berechneGain(Attribute, traininsgdaten) / teilenDurchNull;
 		}
 		else
@@ -354,6 +445,7 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 	{
 	case AUSBLICK_ID:
 		if (AttributWert == 1000) {
+			test = 50; // NEU NEU NEU
 			for (int i = 0; i < size; i++) {
 				if (tD->mtTagVector->at(i).getAusblick() == SONNIG)
 					tagVektor->push_back(tD->mtTagVector->at(i));
@@ -361,6 +453,7 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 		}
 
 		if (AttributWert == 2000) {
+			test = 60; // NEU NEU NEU 
 			for (int i = 0; i < size; i++) {
 				if (tD->mtTagVector->at(i).getAusblick() == REGEN)
 					tagVektor->push_back(tD->mtTagVector->at(i));
@@ -368,6 +461,7 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 		}
 
 		if (AttributWert == 3000) {
+			test = 70; // NEU NEU NEU
 			for (int i = 0; i < size; i++) {
 				if (tD->mtTagVector->at(i).getAusblick() == BEWOELKT)
 					tagVektor->push_back(tD->mtTagVector->at(i));
@@ -377,13 +471,17 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 
 		break;
 
-	case LUFTFEUCHTIGKEIT_ID:for (int i = 0; i < size; i++) {
+	case LUFTFEUCHTIGKEIT_ID:
+		test = 80; // NEU NEU NEU
+		for (int i = 0; i < size; i++) {
 		if (tD->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL)
 			tagVektor->push_back(tD->mtTagVector->at(i));
 	}  tD->SubSetTraininsgdaten(tagVektor); break;
 
 
-	case WIND_ID:for (int i = 0; i < size; i++) {
+	case WIND_ID:
+		test = 90;	// NEUNEUNEU
+		for (int i = 0; i < size; i++) {
 		if (tD->mtTagVector->at(i).getWind() == SCHWACH)
 			tagVektor->push_back(tD->mtTagVector->at(i));
 	}  tD->SubSetTraininsgdaten(tagVektor); break;
@@ -406,7 +504,7 @@ void machBinaerbaum(Traininsgdaten *tD) {
 			cout << "-------------------------------BLATTENDE----------------------------" << endl;
 			tD->traininsgdatenLesen();
 			AttributWert = AttributWert + 1000;
-			if (AttributWert > 3000) { stopRekursion = true; return; }
+			if (AttributWert > 3000) { stopRekursion = true; }
 
 		}
 		wurzel = sucheBesteAtrribut(tD).miAttributID;
@@ -439,7 +537,7 @@ void wurzelAusgabe(Attribut b) {
 //-----------------------------------------
 void InfoAusgabe(Traininsgdaten *tD) {
 
-	
+#ifdef AUSGABE1
 	for (int i = 0; i < tD->mtTagVector->size(); i++)
 		tD->mtTagVector->at(i).tagAusgabe();
 	cout << tD->mtTagVector->size() << endl;
@@ -449,7 +547,36 @@ void InfoAusgabe(Traininsgdaten *tD) {
 	cout << "Bestes Atribut: " << "\t\t";  wurzelAusgabe(sucheBesteAtrribut(tD));
 	cout << "------------" << endl;
 
+#else 
+	if (wurzel == 100 && test == 60)
+	{
+		cout << "\t\t\t\t\t\tregnerisch" << endl << endl;
 
+	}
+	if (wurzel == 100 && test == 70)
+	{
+		cout << "\t\t\t\tbewoelkt" << endl << endl;
+		cout << "\t\t\t\tPlay" << endl << endl;
+
+	}
+	if (wurzel == 300 && test == 80)
+	{
+		cout << "Luftfeuchtigkeit" << endl << endl;
+		cout << "Normal\t\tHoch" << endl << endl;
+		cout << "Play\t\tDon't Play" << endl << endl;
+	}
+	if (wurzel == 400 && test == 90)
+	{
+		cout << "\t\t\t\t\t\tWind" << endl << endl;
+		cout << "\t\t\t\t\t\tSchwach\t\tStark" << endl << endl;
+		cout << "\t\t\t\t\t\tPlay\t\tDon't Play" << endl << endl;
+	}
+	if (wurzel == 100 && test == 50)
+	{
+		cout << "\t\t\t\tAusblick" << endl << endl;
+		cout << "sonnig" << endl << endl;
+	}
+#endif
 
 }
 

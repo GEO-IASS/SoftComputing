@@ -9,10 +9,11 @@ void main() {
 	Traininsgdaten tabelle;
 
 	tabelle.traininsgdatenLesen();
-			
+	
+	
 	machBinaerbaum(&tabelle);
 	
-
+	
 
 	
 	//cin.ignore(1);
