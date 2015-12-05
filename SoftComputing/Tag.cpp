@@ -7,7 +7,7 @@
 Tag::Tag() //: miLuftfeuchtigkeit(DEFAULT), miTemperatur(DEFAULT), mbSpiel(DEFAULT)
 		 
 {
-	maAttribut.msAusblick		  = "DEFAULT";
+	maAttribut.msAusblick		  = DEFAULT;
 	maAttribut.miTemperatur		  =	DEFAULT;
 	maAttribut.miLuftfeuchtigkeit = DEFAULT;
 	maAttribut.mbWind			  =	DEFAULT;
@@ -16,33 +16,50 @@ Tag::Tag() //: miLuftfeuchtigkeit(DEFAULT), miTemperatur(DEFAULT), mbSpiel(DEFAU
 }
 
 
-Tag::Tag(string sAusblik, int iTemp,int iLuft,bool bWwind, bool bSpiel) {
-	this->maAttribut.msAusblick			= sAusblik;
+Tag::Tag(int iAusblik, int iTemp,int iLuft,int iWwind, int iSpiel) {
+	this->maAttribut.msAusblick			= iAusblik;
 	this->maAttribut.miTemperatur		= iTemp;
 	this->maAttribut.miLuftfeuchtigkeit	= iLuft;
-	this->maAttribut.mbWind				= bWwind;
-	this->maAttribut.mbSpiel			= bSpiel;
-	
+	this->maAttribut.mbWind				= iWwind;
+	this->maAttribut.mbSpiel			= iSpiel;
 	
 }
 
 Tag::~Tag(){}
 
-string  Tag::getAusblick(){			return this->maAttribut.msAusblick; }
+int		Tag::getAusblick(){			return this->maAttribut.msAusblick; }
 int		Tag::getTemperatur(){		return this->maAttribut.miTemperatur; }
 int		Tag::getLuftfeuchtigkeit(){ return this->maAttribut.miLuftfeuchtigkeit; }
-bool	Tag::getWind(){				return this->maAttribut.mbWind; }
-bool	Tag::getSpiel(){			return this->maAttribut.mbSpiel; }
+int		Tag::getWind(){				return this->maAttribut.mbWind; }
+int		Tag::getSpiel(){			return this->maAttribut.mbSpiel; }
 
 
 
 
 void Tag::tagAusgabe() {
+	string a, t, f, w, s;
+	if (maAttribut.msAusblick == SONNIG) a = "SONNIG  ";
+	if (maAttribut.msAusblick == REGEN) a = "REGEN   ";
+	if (maAttribut.msAusblick == BEWOELKT) a = "BEWOELKT";
+	
+	if (maAttribut.miTemperatur == HEISS) t = "HEISS   ";
+	if (maAttribut.miTemperatur == MILD) t = "MILD    ";
+	if (maAttribut.miTemperatur == CALT) t = "CALT    ";
+	
+	if (maAttribut.miLuftfeuchtigkeit == HOCH) f = "HOCH    ";
+	if (maAttribut.miLuftfeuchtigkeit == NORMAL) f = "NORMAL  ";
+
+	if (maAttribut.mbWind == STARK) w = "STARK   ";
+	if (maAttribut.mbWind == SCHWACH) w = "SCHWACH ";
+	
+	if (maAttribut.mbSpiel == SPIELEN) s = "YES";
+	if (maAttribut.mbSpiel == NICHT_SPIELEN) s = "NO";
+	
 	cout 
-		<< "Ausblick: " << this->maAttribut.msAusblick <<"|"
-		<< " Temp: " << this->maAttribut.miTemperatur << " |"
-		<< " Feuchtigkeit: "<<this->maAttribut.miLuftfeuchtigkeit << "|"
-		<<" Wind: "<< maAttribut.mbWind << "|"
-		<<" Spiel: "<< maAttribut.mbSpiel << "|" <<endl;
+		<< "Ausblick:" << a <<"|"
+		<< " Temp:" << t << " |"
+		<< " Feucht:"<<f << "|"
+		<<" Wind:"<< w << "|"
+		<<" Spiel:"<< s<< "|" <<endl;
 }
 

@@ -14,7 +14,7 @@ double getEntropieZielattributes(Traininsgdaten *tDaten) {
 
 	double positiv = 0, negativ = 0, summe = 0;
 	for (int i = 0; i < ANZAHLDATEN; i++) {
-		if (tDaten->mtTagVector->at(i).getSpiel()) positiv++;
+		if (tDaten->mtTagVector->at(i).getSpiel()==SPIELEN) positiv++;
 		else negativ++;
 	}
 	summe = positiv + negativ;

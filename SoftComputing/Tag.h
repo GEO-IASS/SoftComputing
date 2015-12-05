@@ -9,21 +9,18 @@ using namespace std;
 
 class Tag 
 {
-private:  
-	
-	
 
 public:	
 	Attribut maAttribut;
 	
-	Tag(string sAusbl, int iLuft, int iTemp, bool bWwind, bool bSpiel);
+	Tag(int iAusbl, int iLuft, int iTemp, int iWwind, int iSpiel);
 	Tag();
 	~Tag();
-	string	getAusblick();
+	int		getAusblick();
 	int		getTemperatur();
 	int		getLuftfeuchtigkeit();
-	bool	getWind();
-	bool	getSpiel();
+	int		getWind();
+	int		getSpiel();
 
 	
 	

@@ -1,18 +1,26 @@
 #pragma once
 
 #define DEFAULT		     0
-#define HEISS			 40
-#define MILD			 20
-#define CALT			 10
-#define HOCH			 90
-#define NORMAL			 45
-#define STARK			 true
-#define SCHWACH			 false
-#define SPIELEN			 true
-#define NICHT_SPIELEN	 false
-#define SONNIG			 "Sonnig  "
-#define REGEN			 "Regen   "
-#define BEWOELKT		 "Bewoelkt"
+
+#define SONNIG			 1
+#define REGEN			 2
+#define BEWOELKT		 3
+
+#define HEISS			 4
+#define MILD			 5
+#define CALT			 6
+
+#define HOCH			 7
+#define NORMAL			 8
+
+#define STARK			 9
+#define SCHWACH			 10
+
+#define SPIELEN			 11
+#define NICHT_SPIELEN	 12
+
+
+
 
 
 #define AUSBLICK_ID				100
@@ -21,7 +29,7 @@
 #define WIND_ID					400
 
 
-//#define AUSGABE1
+#define AUSGABE1
 
 
 

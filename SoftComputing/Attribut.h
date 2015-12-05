@@ -7,10 +7,10 @@ class Attribut
 
 public:
 	
-	string    msAusblick;
-	int	      miTemperatur, miLuftfeuchtigkeit;
-	bool	  mbWind;
-	bool	  mbSpiel;   // Zielattribut 
+	int		msAusblick;
+	int	    miTemperatur, miLuftfeuchtigkeit;
+	int		mbWind;
+	int		mbSpiel;   // Zielattribut 
 
 	int		  miAttributID;
 	double	  mdAttributEntropie;
