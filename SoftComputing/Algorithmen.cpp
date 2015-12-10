@@ -4,7 +4,7 @@
 
 
 int durchlauf = 0;
-int AttributWert = 0;
+int AttributWert = SONNIG;
 bool stopRekursion = false;
 int wurzel;
 int test; 
@@ -510,56 +510,62 @@ Traininsgdaten *WurzelDaten = new Traininsgdaten();
 void machBinaerbaum(Traininsgdaten *tD) {
 	//cout << "-------------------REKURSIONNUmmer" << i++ << "------------------------" << endl;
 	
-	
-		InfoAusgabe(tD);
-
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		
-		teilenTraininsgdaten(wurzel, SONNIG, tD);
-		// Wenn Ende des Blats von dem Baum nicht erreicht wurde geh noch tiefe 
-		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; }
-		InfoAusgabe(tD);
-
-		tD->mtTagVector = SubDaten->mtTagVector;
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, HOCH, tD);
-		InfoAusgabe(tD);
-
-		tD->mtTagVector = SubDaten->mtTagVector;
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, NORMAL, tD);
-		InfoAusgabe(tD);
-	
-		
+	if (sucheBesteAtrribut(tD).mdAttributEntropie == 0)
+	{
+		AttributWert = AttributWert + SONNIG;//return;
 		tD->traininsgdatenLesen();
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, BEWOELKT, tD);
-		// Wenn Ende des Blats von dem Baum nicht erreicht wurde geh noch tiefe  
-		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; } // Hier wird nix passiert ende des Blatts 
+		if (AttributWert > BEWOELKT) return;
+
+	}
+
+
+	if (!stopRekursion) {
 		InfoAusgabe(tD);
+
+		wurzel = sucheBesteAtrribut(tD).miAttributID;
+		
+		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0)
+		{
+			teilenTraininsgdaten(wurzel, AttributWert, tD);
+			SubDaten->mtTagVector = tD->mtTagVector;
+
+
+		}
+		InfoAusgabe(tD);
+
 
 		
-		tD->traininsgdatenLesen();
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, REGEN, tD);
-		// Wenn Ende des Blats von dem Baum nicht erreicht wurde geh noch tiefe 
-		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; }
-		InfoAusgabe(tD);
+		if (sucheBesteAtrribut(tD).miAttributID==LUFTFEUCHTIGKEIT_ID)
+		{
+			tD->mtTagVector = SubDaten->mtTagVector;
+			wurzel = sucheBesteAtrribut(tD).miAttributID;
+			teilenTraininsgdaten(wurzel, HOCH, tD);
+			InfoAusgabe(tD);
 
-
-		tD->mtTagVector = SubDaten->mtTagVector;
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, STARK, tD);
-		InfoAusgabe(tD);
-
-		tD->mtTagVector = SubDaten->mtTagVector;
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, SCHWACH, tD);
-		InfoAusgabe(tD);
+			tD->mtTagVector = SubDaten->mtTagVector;
+			wurzel = sucheBesteAtrribut(tD).miAttributID;
+			teilenTraininsgdaten(wurzel, NORMAL, tD);
+			InfoAusgabe(tD);
+		}
 		
 
 		
-		//machBinaerbaum(tD);
+		if (sucheBesteAtrribut(tD).miAttributID == WIND_ID)
+		{
+			tD->mtTagVector = SubDaten->mtTagVector;
+			wurzel = sucheBesteAtrribut(tD).miAttributID;
+			teilenTraininsgdaten(wurzel, STARK, tD);
+			InfoAusgabe(tD);
+
+			tD->mtTagVector = SubDaten->mtTagVector;
+			wurzel = sucheBesteAtrribut(tD).miAttributID;
+			teilenTraininsgdaten(wurzel, SCHWACH, tD);
+			InfoAusgabe(tD);
+		}
+
+	}
+		
+		machBinaerbaum(tD);
 
 
 	}// Ende Binärbaum
