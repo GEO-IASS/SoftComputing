@@ -514,27 +514,19 @@ void machBinaerbaum(Traininsgdaten *tD) {
 	{
 		AttributWert = AttributWert + SONNIG;//return;
 		tD->traininsgdatenLesen();
-		if (AttributWert > BEWOELKT) return;
+		if (AttributWert > BEWOELKT) stopRekursion=true;
 
 	}
 
 
 	if (!stopRekursion) {
+		
 		InfoAusgabe(tD);
-
 		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		
-		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0)
-		{
-			teilenTraininsgdaten(wurzel, AttributWert, tD);
-			SubDaten->mtTagVector = tD->mtTagVector;
-
-
-		}
+		teilenTraininsgdaten(wurzel, AttributWert, tD);
+		SubDaten->mtTagVector = tD->mtTagVector;
 		InfoAusgabe(tD);
-
-
-		
+	
 		if (sucheBesteAtrribut(tD).miAttributID==LUFTFEUCHTIGKEIT_ID)
 		{
 			tD->mtTagVector = SubDaten->mtTagVector;
@@ -547,9 +539,7 @@ void machBinaerbaum(Traininsgdaten *tD) {
 			teilenTraininsgdaten(wurzel, NORMAL, tD);
 			InfoAusgabe(tD);
 		}
-		
-
-		
+	
 		if (sucheBesteAtrribut(tD).miAttributID == WIND_ID)
 		{
 			tD->mtTagVector = SubDaten->mtTagVector;
@@ -564,8 +554,8 @@ void machBinaerbaum(Traininsgdaten *tD) {
 		}
 
 	}
-		
-		machBinaerbaum(tD);
+	else return;
+	machBinaerbaum(tD);
 
 
 	}// Ende Binärbaum
