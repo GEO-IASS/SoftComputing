@@ -17,10 +17,9 @@ void Traininsgdaten::traininsgdatenLesen() {
 			}
 }
 */
-
 void Traininsgdaten::traininsgdatenLesen() {
-	
-	mtTagVector = new vector<Tag> {
+
+	mtTagVector = new vector<Tag>{
 		//	 (sAusblik, iTemp, iLuft,bWwind,  bSpiel)
 		/*D1*/{ SONNIG,  HEISS, HOCH,   SCHWACH, NICHT_SPIELEN },
 		/*D2*/{ SONNIG,  HEISS, HOCH,   STARK,   NICHT_SPIELEN },
@@ -31,12 +30,12 @@ void Traininsgdaten::traininsgdatenLesen() {
 		/*D7*/{ BEWOELKT,CALT,  NORMAL, STARK,   SPIELEN },
 		/*D8*/{ SONNIG,  MILD,  HOCH,   SCHWACH, NICHT_SPIELEN },
 		/*D9*/{ SONNIG,  CALT,  NORMAL, SCHWACH, SPIELEN },
-		/*D10*/{REGEN,   MILD,  NORMAL, SCHWACH, SPIELEN },
-		/*D11*/{SONNIG,  MILD,  NORMAL, STARK,   SPIELEN },
-		/*D12*/{BEWOELKT,MILD,  HOCH,   STARK,   SPIELEN },
-		/*D13*/{BEWOELKT,HEISS, NORMAL, SCHWACH, SPIELEN },
-		/*D14*/{REGEN,   MILD,  HOCH,   STARK,   NICHT_SPIELEN },
-		};
+		/*D10*/{ REGEN,   MILD,  NORMAL, SCHWACH, SPIELEN },
+		/*D11*/{ SONNIG,  MILD,  NORMAL, STARK,   SPIELEN },
+		/*D12*/{ BEWOELKT,MILD,  HOCH,   STARK,   SPIELEN },
+		/*D13*/{ BEWOELKT,HEISS, NORMAL, SCHWACH, SPIELEN },
+		/*D14*/{ REGEN,   MILD,  HOCH,   STARK,   NICHT_SPIELEN },
+	};
 }
 
 void Traininsgdaten::SubSetTraininsgdaten(vector<Tag> *arrVec) {

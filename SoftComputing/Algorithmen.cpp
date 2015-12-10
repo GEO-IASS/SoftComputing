@@ -4,7 +4,7 @@
 
 
 int durchlauf = 0;
-int AttributWert = 1000;;
+int AttributWert = 0;
 bool stopRekursion = false;
 int wurzel;
 int test; 
@@ -412,125 +412,179 @@ Attribut sucheBesteAtrribut(Traininsgdaten *tDaten) {
 	//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
 
 	////    blockAttribut wird dann nicht berechnet 
-	if (durchlauf==0) {
+	
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(AUSBLICK_ID, tDaten));
 		besteAttribut.setmiAttributID(AUSBLICK_ID);
 		besteAttributVector.push_back(besteAttribut);
-	}
+	
 
-	if (durchlauf==0) {
+	
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten));
 		besteAttribut.setmiAttributID(LUFTFEUCHTIGKEIT_ID);
 		besteAttributVector.push_back(besteAttribut);
-	}
+	
 
-	if (durchlauf==0) {
+	
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(WIND_ID, tDaten));
 		besteAttribut.setmiAttributID(WIND_ID);
 		besteAttributVector.push_back(besteAttribut);
-	}
+
 
 	return  sucheMaximum(besteAttributVector);
 }
 //-----------------------------------------
 void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 	
-	//1000= Sonnig
-	//2000 = Regen 
-	//3000 = Bewolkt
 	vector<Tag> *tagVektor = new vector<Tag>;
 	
 	int size = tD->mtTagVector->size();
 	switch (attribut)
 	{
 	case AUSBLICK_ID:
-		if (AttributWert == 1000) {
-			test = 50; // NEU NEU NEU
+		if (AttributWert == SONNIG) {
+			
 			for (int i = 0; i < size; i++) {
 				if (tD->mtTagVector->at(i).getAusblick() == SONNIG)
 					tagVektor->push_back(tD->mtTagVector->at(i));
 			}  tD->SubSetTraininsgdaten(tagVektor);
 		}
 
-		if (AttributWert == 2000) {
-			test = 60; // NEU NEU NEU 
+		if (AttributWert == REGEN) {
+		
 			for (int i = 0; i < size; i++) {
 				if (tD->mtTagVector->at(i).getAusblick() == REGEN)
 					tagVektor->push_back(tD->mtTagVector->at(i));
 			}  tD->SubSetTraininsgdaten(tagVektor);
 		}
 
-		if (AttributWert == 3000) {
-			test = 70; // NEU NEU NEU
-			for (int i = 0; i < size; i++) {
+		if (AttributWert == BEWOELKT) {
+				for (int i = 0; i < size; i++) {
 				if (tD->mtTagVector->at(i).getAusblick() == BEWOELKT)
 					tagVektor->push_back(tD->mtTagVector->at(i));
 			}  tD->SubSetTraininsgdaten(tagVektor);
 		}
 
-
 		break;
 
 	case LUFTFEUCHTIGKEIT_ID:
-		test = 80; // NEU NEU NEU
-		for (int i = 0; i < size; i++) {
-		if (tD->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL)
-			tagVektor->push_back(tD->mtTagVector->at(i));
-	}  tD->SubSetTraininsgdaten(tagVektor); break;
+		if (AttributWert == HOCH) {
+			for (int i = 0; i < size; i++) {
+				if (tD->mtTagVector->at(i).getLuftfeuchtigkeit() == HOCH)
+					tagVektor->push_back(tD->mtTagVector->at(i));
+			}  tD->SubSetTraininsgdaten(tagVektor);
+		}
 
+		if (AttributWert == NORMAL) {
+			for (int i = 0; i < size; i++) {
+				if (tD->mtTagVector->at(i).getLuftfeuchtigkeit() == NORMAL)
+					tagVektor->push_back(tD->mtTagVector->at(i));
+			}  tD->SubSetTraininsgdaten(tagVektor);
+		}break;
 
 	case WIND_ID:
-		test = 90;	// NEUNEUNEU
-		for (int i = 0; i < size; i++) {
-		if (tD->mtTagVector->at(i).getWind() == SCHWACH)
-			tagVektor->push_back(tD->mtTagVector->at(i));
-	}  tD->SubSetTraininsgdaten(tagVektor); break;
+		if (AttributWert == SCHWACH) {
+			for (int i = 0; i < size; i++) {
+				if (tD->mtTagVector->at(i).getWind() == SCHWACH)
+					tagVektor->push_back(tD->mtTagVector->at(i));
+			}  tD->SubSetTraininsgdaten(tagVektor);
+		}
+
+		if (AttributWert == STARK) {
+			for (int i = 0; i < size; i++) {
+				if (tD->mtTagVector->at(i).getWind() == STARK)
+					tagVektor->push_back(tD->mtTagVector->at(i));
+			}  tD->SubSetTraininsgdaten(tagVektor);
+		}break;
 	
 	}//end Switch
 }
-//-----------------------------------------
 
 
-//----------------REKURSIVE_FUNKTION-------------------------
+
+
+
+
+Traininsgdaten *SubDaten = new Traininsgdaten();
+Traininsgdaten *WurzelDaten = new Traininsgdaten();
 
 void machBinaerbaum(Traininsgdaten *tD) {
-
+	//cout << "-------------------REKURSIONNUmmer" << i++ << "------------------------" << endl;
 	
-		if(!stopRekursion){
-
-		//------------------------
+	
 		InfoAusgabe(tD);
-		if (sucheBesteAtrribut(tD).mdAttributEntropie == 0) {
-			cout << "-------------------------------BLATTENDE----------------------------" << endl;
-			tD->traininsgdatenLesen();
-			AttributWert = AttributWert + 1000;
-			if (AttributWert > 3000) { stopRekursion = true; }
 
-		}
 		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, AttributWert, tD);
 		
-		//iterativer Aufruf
-		machBinaerbaum(tD);
+		teilenTraininsgdaten(wurzel, SONNIG, tD);
+		// Wenn Ende des Blats von dem Baum nicht erreicht wurde geh noch tiefe 
+		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; }
+		InfoAusgabe(tD);
+
+		tD->mtTagVector = SubDaten->mtTagVector;
+		wurzel = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(wurzel, HOCH, tD);
+		InfoAusgabe(tD);
+
+		tD->mtTagVector = SubDaten->mtTagVector;
+		wurzel = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(wurzel, NORMAL, tD);
+		InfoAusgabe(tD);
+	
+		
+		tD->traininsgdatenLesen();
+		wurzel = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(wurzel, BEWOELKT, tD);
+		// Wenn Ende des Blats von dem Baum nicht erreicht wurde geh noch tiefe  
+		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; } // Hier wird nix passiert ende des Blatts 
+		InfoAusgabe(tD);
+
+		
+		tD->traininsgdatenLesen();
+		wurzel = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(wurzel, REGEN, tD);
+		// Wenn Ende des Blats von dem Baum nicht erreicht wurde geh noch tiefe 
+		if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; }
+		InfoAusgabe(tD);
+
+
+		tD->mtTagVector = SubDaten->mtTagVector;
+		wurzel = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(wurzel, STARK, tD);
+		InfoAusgabe(tD);
+
+		tD->mtTagVector = SubDaten->mtTagVector;
+		wurzel = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(wurzel, SCHWACH, tD);
+		InfoAusgabe(tD);
+		
+
+		
+		//machBinaerbaum(tD);
+
+
+	}// Ende Binärbaum
+
 	
 
-		}
-		
-		else return;
+	
 		
 	
 
-}
+	
+		
+	
+
+
 	
 //-----------------------------------------
 void wurzelAusgabe(Attribut b) {
-	if(b.miAttributID==100)
+	if(b.miAttributID==AUSBLICK_ID)
 	cout << b.mdAttributEntropie << "|" << "AUSBLICK"<< endl;
-	if (b.miAttributID == 200)
+	if (b.miAttributID == TEMPERATUR_ID)
 	cout << b.mdAttributEntropie << "|" << "TEMPERATUR" << endl;
-	if (b.miAttributID == 300)
+	if (b.miAttributID == LUFTFEUCHTIGKEIT_ID)
 	cout << b.mdAttributEntropie << "|" << "LUFTFEUCHTIGKEIT" << endl;
-	if (b.miAttributID == 400)
+	if (b.miAttributID == WIND_ID)
 	cout << b.mdAttributEntropie << "|" << "WIND" << endl;
 
 }
@@ -544,7 +598,7 @@ void InfoAusgabe(Traininsgdaten *tD) {
 	cout << "GainRatioAusblick: " << "\t\t" << berechneGainRatio(AUSBLICK_ID, tD) << endl;
 	cout << "GainRatioLuftFeucht: " << "\t\t" << berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tD) << endl;
 	cout << "GainRatioWind: " << "\t\t\t" << berechneGainRatio(WIND_ID, tD) << endl;
-	cout << "Bestes Atribut: " << "\t\t";  wurzelAusgabe(sucheBesteAtrribut(tD));
+	cout << "Bestes Atribut: " << "\t\t";  wurzelAusgabe(sucheBesteAtrribut(tD)); cout << endl;
 	cout << "------------" << endl;
 
 #else 

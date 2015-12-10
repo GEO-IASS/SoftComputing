@@ -12,6 +12,8 @@ public:
 	int		mbWind;
 	int		mbSpiel;   // Zielattribut 
 
+
+
 	int		  miAttributID;
 	double	  mdAttributEntropie;
 	
