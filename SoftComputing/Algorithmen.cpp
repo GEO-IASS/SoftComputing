@@ -3,11 +3,15 @@
 #define ANZAHLDATEN      tDaten->mtTagVector->size()
 
 
-int durchlauf = 0;
-int AttributWert = SONNIG;
+
+
+
+int AttributWert = 0;
+int AttributID= 0;
 bool stopRekursion = false;
 int wurzel;
-int test; 
+bool start = false;
+
 
 //-----------------------------------------
 double getEntropieZielattributes(Traininsgdaten *tDaten) {
@@ -397,34 +401,24 @@ Attribut sucheMaximum(vector <Attribut> vector) {
 }
 //-----------------------------------------
 Attribut sucheBesteAtrribut(Traininsgdaten *tDaten) {
+	vector<Attribut> besteAttributVector;
+	Attribut besteAttribut;
 	//Der C4.5 - Algorithmus ist eine Spezialisierung von
 	//Algorithmus 3.1, bei der die Relation “besser” f¨ur die Attributauswahl auf dem sogenannten normierten Iformationsgewinn GainRation
 	// Das ist der Gewinn an Informationsgehalt durch das Attribut X.
 	//Ranking zwischen Attributen möglich
 	//Was will man dadurch erreichen ? Möglichst kleine Entscheidungsbäume, so dass Beispiele schon nach einigen Fragen identifiziert werden können
-	vector<Attribut> besteAttributVector;
-	Attribut besteAttribut;
-
-
-	//for (int attribut=AUSBLICK_ID; attribut <= WIND_ID; attribut=attribut+AUSBLICK_ID) {
+	
+	
 	//Nur Vorubegehend bis TEMPERATUR nicht implemetiert
-	//if (attribut == TEMPERATUR_ID) attribut = attribut + AUSBLICK_ID;
-	//	besteAttribut.push_back(berechneGainRatio(attribut, tDaten));}
 
-	////    blockAttribut wird dann nicht berechnet 
 	
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(AUSBLICK_ID, tDaten));
 		besteAttribut.setmiAttributID(AUSBLICK_ID);
 		besteAttributVector.push_back(besteAttribut);
-	
-
-	
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(LUFTFEUCHTIGKEIT_ID, tDaten));
 		besteAttribut.setmiAttributID(LUFTFEUCHTIGKEIT_ID);
 		besteAttributVector.push_back(besteAttribut);
-	
-
-	
 		besteAttribut.setmdAttributEntropie(berechneGainRatio(WIND_ID, tDaten));
 		besteAttribut.setmiAttributID(WIND_ID);
 		besteAttributVector.push_back(besteAttribut);
@@ -507,58 +501,155 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 Traininsgdaten *SubDaten = new Traininsgdaten();
 Traininsgdaten *WurzelDaten = new Traininsgdaten();
 
+bool blockAusblick;
+bool blockWind;
+bool blockLuft;
+
+bool blockAusblickSonnig;
+bool blockAusblickRegen;
+bool blockAusblickBewolkt;
+
+bool blockWindStark;
+bool blockWindSchwach;
+
+
+
+int laufvariable;
+
 void machBinaerbaum(Traininsgdaten *tD) {
 	//cout << "-------------------REKURSIONNUmmer" << i++ << "------------------------" << endl;
-	
+	laufvariable++;
+	if(!start){
+		AttributID = sucheBesteAtrribut(tD).miAttributID;
+		
+		switch (AttributID)
+		{
+		case AUSBLICK_ID: AttributWert = SONNIG; blockAusblick = true;
+			break;
+		case LUFTFEUCHTIGKEIT_ID: AttributWert = HOCH; blockLuft = true;
+			break;
+		}
+		start = true;
+
+	}
+
+
+	// Bedienung wenn das ENDE des Blattes erreicht wurde
 	if (sucheBesteAtrribut(tD).mdAttributEntropie == 0)
 	{
-		AttributWert = AttributWert + SONNIG;//return;
-		tD->traininsgdatenLesen();
-		if (AttributWert > BEWOELKT) stopRekursion=true;
-
+		if (blockAusblick == true) {
+			blockAusblick = false;
+			tD->mtTagVector = WurzelDaten->mtTagVector;
+		}
+		if (blockWind == true) {
+			blockWind = false;
+			tD->mtTagVector = WurzelDaten->mtTagVector;
+		}
+		if (blockAusblickRegen && blockAusblickBewolkt && blockAusblickSonnig &&blockWindStark && blockWindSchwach) {
+			blockAusblickRegen = false;
+			blockAusblickBewolkt = false;
+			blockAusblickSonnig = false;
+			
+			blockWindStark = false;
+			blockWindSchwach = false;
+			tD->traininsgdatenLesen();
+			if (AttributWert == HOCH) AttributWert = NORMAL;
+			if (AttributWert == SCHWACH) AttributWert = STARK;
+			if (laufvariable == 6 ) stopRekursion = true;
+		}
+	
 	}
 
 
 	if (!stopRekursion) {
+
 		
-		InfoAusgabe(tD);
 		wurzel = sucheBesteAtrribut(tD).miAttributID;
 		teilenTraininsgdaten(wurzel, AttributWert, tD);
+		WurzelDaten->mtTagVector = tD->mtTagVector;
 		SubDaten->mtTagVector = tD->mtTagVector;
 		InfoAusgabe(tD);
-	
-		if (sucheBesteAtrribut(tD).miAttributID==LUFTFEUCHTIGKEIT_ID)
-		{
-			tD->mtTagVector = SubDaten->mtTagVector;
-			wurzel = sucheBesteAtrribut(tD).miAttributID;
-			teilenTraininsgdaten(wurzel, HOCH, tD);
-			InfoAusgabe(tD);
 
-			tD->mtTagVector = SubDaten->mtTagVector;
-			wurzel = sucheBesteAtrribut(tD).miAttributID;
-			teilenTraininsgdaten(wurzel, NORMAL, tD);
-			InfoAusgabe(tD);
-		}
-	
-		if (sucheBesteAtrribut(tD).miAttributID == WIND_ID)
-		{
-			tD->mtTagVector = SubDaten->mtTagVector;
-			wurzel = sucheBesteAtrribut(tD).miAttributID;
-			teilenTraininsgdaten(wurzel, STARK, tD);
-			InfoAusgabe(tD);
+		if (!blockAusblick) {
+			if (sucheBesteAtrribut(tD).miAttributID == AUSBLICK_ID)
+			{
+				if (!blockAusblickSonnig&&!blockAusblick) {
+					tD->mtTagVector = SubDaten->mtTagVector;
+					wurzel = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(wurzel, SONNIG, tD);
+					if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockAusblick = true; }
+					blockAusblickSonnig = true;
+					InfoAusgabe(tD);
 
-			tD->mtTagVector = SubDaten->mtTagVector;
-			wurzel = sucheBesteAtrribut(tD).miAttributID;
-			teilenTraininsgdaten(wurzel, SCHWACH, tD);
-			InfoAusgabe(tD);
+				}
+
+				if (!blockAusblickRegen&&!blockAusblick) {
+					tD->mtTagVector = SubDaten->mtTagVector;
+					wurzel = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(wurzel, REGEN, tD);
+					if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockAusblick = true; }
+					blockAusblickRegen = true;
+					InfoAusgabe(tD);
+				}
+
+
+				if (!blockAusblickBewolkt&&!blockAusblick) {
+					tD->mtTagVector = SubDaten->mtTagVector;
+					wurzel = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(wurzel, BEWOELKT, tD);
+					if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockAusblick = true; }
+					blockAusblickBewolkt = true;
+					InfoAusgabe(tD);
+
+				}
+			}
+
+
+			if (!blockLuft) {
+				if (sucheBesteAtrribut(tD).miAttributID == LUFTFEUCHTIGKEIT_ID)
+				{
+					tD->mtTagVector = SubDaten->mtTagVector;
+					wurzel = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(wurzel, HOCH, tD);
+					InfoAusgabe(tD);
+
+					tD->mtTagVector = SubDaten->mtTagVector;
+					wurzel = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(wurzel, NORMAL, tD);
+					InfoAusgabe(tD);
+				}
+			}
+
+			if (!blockWind) {
+				if (sucheBesteAtrribut(tD).miAttributID == WIND_ID)
+				{
+
+					if (!blockWindStark&&!blockWind) {
+						tD->mtTagVector = SubDaten->mtTagVector;
+						wurzel = sucheBesteAtrribut(tD).miAttributID;
+						teilenTraininsgdaten(wurzel, STARK, tD);
+						if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockWind = true; }
+						blockWindStark = true;
+						InfoAusgabe(tD);
+					}
+					
+					if (!blockWindSchwach&&!blockWind) {
+						tD->mtTagVector = SubDaten->mtTagVector;
+						wurzel = sucheBesteAtrribut(tD).miAttributID;
+						teilenTraininsgdaten(wurzel, SCHWACH, tD);
+						if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockWind = true; }
+						blockWindSchwach = true;
+						InfoAusgabe(tD);
+					}
+				}
+			}
+
 		}
+		else return;
+		machBinaerbaum(tD);
 
 	}
-	else return;
-	machBinaerbaum(tD);
-
-
-	}// Ende Binärbaum
+}// Ende Binärbaum
 
 	
 
