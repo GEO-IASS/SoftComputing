@@ -6,11 +6,29 @@
 
 
 
-int AttributWert = 0;
-int AttributID= 0;
+int startAttributWert = 0;
+int StartAttributID = 0;
 bool stopRekursion = false;
-int wurzel;
+int attributID;
 bool start = false;
+int laufvariable;
+
+Traininsgdaten *SubDaten = new Traininsgdaten();
+Traininsgdaten *WurzelDaten = new Traininsgdaten();
+
+bool blockAusblick;
+bool blockWind;
+bool blockLuft;
+
+bool blockAusblickSonnig;
+bool blockAusblickRegen;
+bool blockAusblickBewolkt;
+
+bool blockWindStark;
+bool blockWindSchwach;
+
+bool blockLuftHoch;
+bool blockLuftNormal;
 
 
 //-----------------------------------------
@@ -494,46 +512,34 @@ void teilenTraininsgdaten(int attribut, int AttributWert, Traininsgdaten *tD) {
 }
 
 
-
-
-
-
-Traininsgdaten *SubDaten = new Traininsgdaten();
-Traininsgdaten *WurzelDaten = new Traininsgdaten();
-
-bool blockAusblick;
-bool blockWind;
-bool blockLuft;
-
-bool blockAusblickSonnig;
-bool blockAusblickRegen;
-bool blockAusblickBewolkt;
-
-bool blockWindStark;
-bool blockWindSchwach;
-
-
-
-int laufvariable;
+int wurzelnachfolgeAttr;
 
 void machBinaerbaum(Traininsgdaten *tD) {
 	//cout << "-------------------REKURSIONNUmmer" << i++ << "------------------------" << endl;
 	laufvariable++;
+	
+	
+	
 	if(!start){
-		AttributID = sucheBesteAtrribut(tD).miAttributID;
+		StartAttributID = sucheBesteAtrribut(tD).miAttributID;
 		
-		switch (AttributID)
+		switch (StartAttributID)
 		{
-		case AUSBLICK_ID: AttributWert = SONNIG; blockAusblick = true;
+		case AUSBLICK_ID: startAttributWert = SONNIG; 
 			break;
-		case LUFTFEUCHTIGKEIT_ID: AttributWert = HOCH; blockLuft = true;
+		case LUFTFEUCHTIGKEIT_ID: startAttributWert = HOCH; 
 			break;
 		}
 		start = true;
-
+		
+		attributID = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(attributID, startAttributWert, tD);
+		wurzelnachfolgeAttr = sucheBesteAtrribut(tD).miAttributID;
+		WurzelDaten->mtTagVector = tD->mtTagVector;
+		tD->traininsgdatenLesen();
 	}
 
-
+	
 	// Bedienung wenn das ENDE des Blattes erreicht wurde
 	if (sucheBesteAtrribut(tD).mdAttributEntropie == 0)
 	{
@@ -545,38 +551,70 @@ void machBinaerbaum(Traininsgdaten *tD) {
 			blockWind = false;
 			tD->mtTagVector = WurzelDaten->mtTagVector;
 		}
-		if (blockAusblickRegen && blockAusblickBewolkt && blockAusblickSonnig &&blockWindStark && blockWindSchwach) {
-			blockAusblickRegen = false;
-			blockAusblickBewolkt = false;
-			blockAusblickSonnig = false;
-			
+		if (blockLuft == true) {
+			blockLuft = false;
+			tD->mtTagVector = WurzelDaten->mtTagVector;
+		}
+
+
+		switch (wurzelnachfolgeAttr)
+		{
+		
+		case AUSBLICK_ID: if (blockAusblickRegen&&blockAusblickBewolkt&&blockAusblickSonnig) {
+			if (startAttributWert == HOCH)
+				tD->traininsgdatenLesen();
+				attributID = sucheBesteAtrribut(tD).miAttributID;
+			teilenTraininsgdaten(attributID, NORMAL, tD);
+			WurzelDaten->mtTagVector = tD->mtTagVector;
 			blockWindStark = false;
 			blockWindSchwach = false;
-			tD->traininsgdatenLesen();
-			if (AttributWert == HOCH) AttributWert = NORMAL;
-			if (AttributWert == SCHWACH) AttributWert = STARK;
-			if (laufvariable == 6 ) stopRekursion = true;
+			blockWindStark = false;
+			blockLuftNormal = false;
+			blockAusblickRegen = false;
+			blockAusblickBewolkt= false;
+			blockAusblickSonnig= false;
+
+			wurzelnachfolgeAttr = sucheBesteAtrribut(tD).miAttributID;
+		} break;
+		
 		}
-	
-	}
-
-
-	if (!stopRekursion) {
 
 		
-		wurzel = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(wurzel, AttributWert, tD);
-		WurzelDaten->mtTagVector = tD->mtTagVector;
-		SubDaten->mtTagVector = tD->mtTagVector;
+
+
+
+		////blockLuftHoch = false;
+
+		//tD->traininsgdatenLesen();
+
+
+		//if (AttributWert == HOCH) AttributWert = NORMAL;
+		//if (AttributWert == SCHWACH) AttributWert = STARK;
+
+		
+
+
+		
+	}// ende des Bediningug
+
+	
+
+	if (!stopRekursion) {
+		
 		InfoAusgabe(tD);
+		
+	
+
+		SubDaten->mtTagVector =tD->mtTagVector;
+	//	InfoAusgabe(tD);
 
 		if (!blockAusblick) {
 			if (sucheBesteAtrribut(tD).miAttributID == AUSBLICK_ID)
 			{
 				if (!blockAusblickSonnig&&!blockAusblick) {
 					tD->mtTagVector = SubDaten->mtTagVector;
-					wurzel = sucheBesteAtrribut(tD).miAttributID;
-					teilenTraininsgdaten(wurzel, SONNIG, tD);
+					attributID = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(attributID, SONNIG, tD);
 					if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockAusblick = true; }
 					blockAusblickSonnig = true;
 					InfoAusgabe(tD);
@@ -585,8 +623,8 @@ void machBinaerbaum(Traininsgdaten *tD) {
 
 				if (!blockAusblickRegen&&!blockAusblick) {
 					tD->mtTagVector = SubDaten->mtTagVector;
-					wurzel = sucheBesteAtrribut(tD).miAttributID;
-					teilenTraininsgdaten(wurzel, REGEN, tD);
+					attributID = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(attributID, REGEN, tD);
 					if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockAusblick = true; }
 					blockAusblickRegen = true;
 					InfoAusgabe(tD);
@@ -595,30 +633,38 @@ void machBinaerbaum(Traininsgdaten *tD) {
 
 				if (!blockAusblickBewolkt&&!blockAusblick) {
 					tD->mtTagVector = SubDaten->mtTagVector;
-					wurzel = sucheBesteAtrribut(tD).miAttributID;
-					teilenTraininsgdaten(wurzel, BEWOELKT, tD);
+					attributID = sucheBesteAtrribut(tD).miAttributID;
+					teilenTraininsgdaten(attributID, BEWOELKT, tD);
 					if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockAusblick = true; }
 					blockAusblickBewolkt = true;
 					InfoAusgabe(tD);
 
 				}
 			}
-
+		} // Ende Ausblick
 
 			if (!blockLuft) {
 				if (sucheBesteAtrribut(tD).miAttributID == LUFTFEUCHTIGKEIT_ID)
 				{
-					tD->mtTagVector = SubDaten->mtTagVector;
-					wurzel = sucheBesteAtrribut(tD).miAttributID;
-					teilenTraininsgdaten(wurzel, HOCH, tD);
-					InfoAusgabe(tD);
+					if (!blockLuftHoch&&!blockLuft) {
+						tD->mtTagVector = SubDaten->mtTagVector;
+						attributID = sucheBesteAtrribut(tD).miAttributID;
+						teilenTraininsgdaten(attributID, HOCH, tD);
+						if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockLuft = true; }
+						blockLuftHoch = true;
+						InfoAusgabe(tD);
+					}
 
-					tD->mtTagVector = SubDaten->mtTagVector;
-					wurzel = sucheBesteAtrribut(tD).miAttributID;
-					teilenTraininsgdaten(wurzel, NORMAL, tD);
-					InfoAusgabe(tD);
+					if (!blockLuftNormal&&!blockLuft) {
+						tD->mtTagVector = SubDaten->mtTagVector;
+						attributID = sucheBesteAtrribut(tD).miAttributID;
+						teilenTraininsgdaten(attributID, NORMAL, tD);
+						if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockLuft = true; }
+						blockLuftNormal = true;
+						InfoAusgabe(tD);
+					}
 				}
-			}
+			} // Ende Luft
 
 			if (!blockWind) {
 				if (sucheBesteAtrribut(tD).miAttributID == WIND_ID)
@@ -626,8 +672,8 @@ void machBinaerbaum(Traininsgdaten *tD) {
 
 					if (!blockWindStark&&!blockWind) {
 						tD->mtTagVector = SubDaten->mtTagVector;
-						wurzel = sucheBesteAtrribut(tD).miAttributID;
-						teilenTraininsgdaten(wurzel, STARK, tD);
+						attributID = sucheBesteAtrribut(tD).miAttributID;
+						teilenTraininsgdaten(attributID, STARK, tD);
 						if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockWind = true; }
 						blockWindStark = true;
 						InfoAusgabe(tD);
@@ -635,17 +681,24 @@ void machBinaerbaum(Traininsgdaten *tD) {
 					
 					if (!blockWindSchwach&&!blockWind) {
 						tD->mtTagVector = SubDaten->mtTagVector;
-						wurzel = sucheBesteAtrribut(tD).miAttributID;
-						teilenTraininsgdaten(wurzel, SCHWACH, tD);
+						attributID = sucheBesteAtrribut(tD).miAttributID;
+						teilenTraininsgdaten(attributID, SCHWACH, tD);
 						if (sucheBesteAtrribut(tD).mdAttributEntropie != 0) { SubDaten->mtTagVector = tD->mtTagVector; blockWind = true; }
 						blockWindSchwach = true;
 						InfoAusgabe(tD);
 					}
 				}
-			}
+			} //Ende Wind
 
-		}
-		else return;
+			 
+			 
+		
+		 	if ((blockAusblickRegen && blockAusblickBewolkt && blockAusblickSonnig &&
+				blockWindStark && blockWindSchwach&&
+				blockLuftHoch&&blockLuftNormal) &&
+				(!blockWind&&!blockAusblick&&!blockLuft)) return;
+			
+		
 		machBinaerbaum(tD);
 
 	}
