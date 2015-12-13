@@ -520,7 +520,7 @@ void machBinaerbaum(Traininsgdaten *tD) {
 	switch (wurzelnachfolgeAttr)
 	{
 
-	case AUSBLICK_ID: if (blockAusblickRegen&&blockAusblickBewolkt&&blockAusblickSonnig) {
+	case AUSBLICK_ID:			if (blockAusblickRegen&&blockAusblickBewolkt&&blockAusblickSonnig) {
 
 		tD->traininsgdatenLesen();
 		blockWindStark = false;
@@ -534,7 +534,7 @@ void machBinaerbaum(Traininsgdaten *tD) {
 		start = false;
 	
 	} break;
-	case LUFTFEUCHTIGKEIT_ID: if (blockLuftNormal&&blockLuftHoch) {
+	case LUFTFEUCHTIGKEIT_ID:	if (blockLuftNormal&&blockLuftHoch) {
 
 		tD->traininsgdatenLesen();
 		blockWindStark = false;
@@ -548,9 +548,7 @@ void machBinaerbaum(Traininsgdaten *tD) {
 		start = false;
 
 	} break;
-
-
-	case WIND_ID: if (blockWindStark&&blockWindSchwach) {
+	case WIND_ID:				if (blockWindStark&&blockWindSchwach) {
 
 		tD->traininsgdatenLesen();
 	
@@ -564,16 +562,11 @@ void machBinaerbaum(Traininsgdaten *tD) {
 		start = false;
 
 	} break;
-
-
-
-	case DEFAULT: 	tD->traininsgdatenLesen();
-					
-					start = false; 
-					break;
+	case DEFAULT: 				tD->traininsgdatenLesen();
+								start = false; 
+								break;
 	
 	} //ende Switch
-
 
 	
 	if(!start){
@@ -581,16 +574,15 @@ void machBinaerbaum(Traininsgdaten *tD) {
 		
 		switch (StartAttributID)
 		{
-		case AUSBLICK_ID: if (startAttributWert == SONNIG) { startAttributWert = BEWOELKT; blockAusblickSonnig = true; break; } 
-							if (startAttributWert == BEWOELKT) {startAttributWert = REGEN; blockAusblickBewolkt = true; break; } 
-							 startAttributWert = SONNIG;
-						
-			break;
-		case LUFTFEUCHTIGKEIT_ID: if (startAttributWert == HOCH) { startAttributWert = NORMAL; blockLuftHoch = true; break; } startAttributWert = HOCH;
-			break;
+		case AUSBLICK_ID:			if (startAttributWert == SONNIG) { startAttributWert = REGEN; blockAusblickSonnig = true; break; } 
+									if (startAttributWert == REGEN) {startAttributWert = BEWOELKT; blockAusblickRegen = true; break; } 
+									startAttributWert = SONNIG;
+									break;
+		case LUFTFEUCHTIGKEIT_ID:	if (startAttributWert == HOCH) { startAttributWert = NORMAL; blockLuftHoch = true; break; } startAttributWert = HOCH;
+									break;
 
-		case WIND_ID: if (startAttributWert == STARK) { startAttributWert = SCHWACH; blockWindStark = true; break; } startAttributWert = STARK;
-			break;
+		case WIND_ID:				if (startAttributWert == STARK) { startAttributWert = SCHWACH; blockWindStark = true; break; } startAttributWert = STARK;
+									break;
 		}
 		start = true;
 		
