@@ -13,6 +13,7 @@ public:
 	int		mbSpiel;   // Zielattribut 
 
 
+	
 
 	int		  miAttributID;
 	double	  mdAttributEntropie;

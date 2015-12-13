@@ -8,10 +8,12 @@
 
 int startAttributWert = 0;
 int WurzelAttributID = 0;
+
+int  WurzelnoDelete=0;
 bool stopRekursion = false;
 int attributID;
 bool start = false;
-int laufvariable;
+bool save=false;
 
 Traininsgdaten *SubDaten = new Traininsgdaten();
 Traininsgdaten *WurzelDaten = new Traininsgdaten();
@@ -514,7 +516,11 @@ int wurzelnachfolgeAttr;
 
 void machBinaerbaum(Traininsgdaten *tD) {
 	//cout << "-------------------REKURSIONNUmmer" << i++ << "------------------------" << endl;
-	laufvariable++;
+	
+	if (!save) {
+		WurzelnoDelete = sucheBesteAtrribut(tD).miAttributID;
+		save = true;
+	}
 	
 
 
@@ -554,8 +560,6 @@ void machBinaerbaum(Traininsgdaten *tD) {
 		} //ende Switch
 	}// ende des Bediningug
 
-	
-
 	if (!start) {
 		
 		WurzelAttributID = sucheBesteAtrribut(tD).miAttributID;
@@ -585,13 +589,12 @@ void machBinaerbaum(Traininsgdaten *tD) {
 		tD->traininsgdatenLesen();
 	}
 
-	allesReset(tD);
+	resetNachAttributsWerten(tD);
 
 
 	if (!stopRekursion) {
 		
-		InfoAusgabe(tD);
-		
+			
 	
 
 		SubDaten->mtTagVector =tD->mtTagVector;
@@ -680,25 +683,38 @@ void machBinaerbaum(Traininsgdaten *tD) {
 			} //Ende Wind
 
 			 
-			 //wenn alle AttributWerte gepr¸fft breche rekursion ab
+			 //wenn alle AttributWerte gepr¸fft breche rekursion ab (stopRekursion wurde mit return ausgetauscht)
 			if (blockAusblickRegen && blockAusblickBewolkt && blockAusblickSonnig &&
 				blockWindStark && blockWindSchwach&&
-				blockLuftHoch&&blockLuftNormal)  return;
+				blockLuftHoch&&blockLuftNormal) {
+				WurzelDaten->mtTagVector = tD->mtTagVector;
+
+				allesReseten();
+				wurzelnachfolgeAttr = sucheBesteAtrribut(tD).miAttributID;
+				start = true;
+				
+				WurzelAttributID = WurzelnoDelete;
+				allesResetenNachWurzel(WurzelAttributID);
+
+
+				//	stopRekursion
+				if (!blockWind&&!blockLuft&&!blockAusblick&&wurzelnachfolgeAttr==0) return;
+				
+			}
 
 				
-		
+		//rekursion Aufruf
 		machBinaerbaum(tD);
 
 	}
-}// Ende Bin‰rbaum
+}// !!!!!!!!!!!!!!!!!!!ENDE!!!!!!! Bin‰rbaum
 
 	
 
-void allesResetenAuﬂerWurzel(int WurzelAttributID) {
+void allesReseten() {
 	
-	switch (WurzelAttributID)
-	{
-	case AUSBLICK_ID:			blockWindStark = false;
+	
+	blockWindStark = false;
 	blockWindSchwach = false;
 	blockWind = false;
 
@@ -706,30 +722,13 @@ void allesResetenAuﬂerWurzel(int WurzelAttributID) {
 	blockLuftNormal = false;
 	blockLuftHoch = false;
 
-
-	break;
-	case LUFTFEUCHTIGKEIT_ID:		blockWindStark = false;
-	blockWindSchwach = false;
-	blockWindStark = false;
-
-
 	blockAusblickRegen = false;
 	blockAusblickBewolkt = false;
 	blockAusblickSonnig = false;
-	break;
-
-	case WIND_ID:					blockLuft = false;
-	blockLuftNormal = false;
-	blockLuftHoch = false;
-
-	blockAusblickRegen = false;
-	blockAusblickBewolkt = false;
-	blockAusblickSonnig = false;
-	break;
-	}
+	
 
 }
-void allesReset(Traininsgdaten *tD) {
+void resetNachAttributsWerten(Traininsgdaten *tD) {
 
 
 	switch (wurzelnachfolgeAttr)
@@ -783,7 +782,34 @@ void allesReset(Traininsgdaten *tD) {
 
 
 }
-	
+void allesResetenNachWurzel(int WurzelAttributID) {
+
+	switch (WurzelAttributID)
+	{
+	case AUSBLICK_ID:
+		blockAusblickRegen = true;
+		blockAusblickBewolkt = true;
+		blockAusblickSonnig = true;
+
+		break;
+	case LUFTFEUCHTIGKEIT_ID:
+
+		
+		blockLuftNormal = true;
+		blockLuftHoch = true;
+
+		break;
+
+	case WIND_ID:
+		blockWindSchwach = true;
+		blockWindStark = true;
+		break;
+	}
+
+}
+
+
+
 //-----------------------------------------
 void wurzelAusgabe(Attribut b) {
 	if(b.miAttributID==AUSBLICK_ID)
