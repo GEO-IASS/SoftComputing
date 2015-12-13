@@ -27,7 +27,8 @@ Attribut sucheBesteAtrribut(Traininsgdaten *tDaten);
 void teilenTraininsgdaten(int attribut, int attributWert, Traininsgdaten *tD);
 void machBinaerbaum(Traininsgdaten *tD);
 
-
+void allesReset(Traininsgdaten *tD);
+void allesResetenAuﬂerWurzel(int WurzelAttributID);
 
 
 void InfoAusgabe(Traininsgdaten *tD);

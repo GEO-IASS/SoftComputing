@@ -35,8 +35,13 @@ void Traininsgdaten::traininsgdatenLesen() {
 		/*D12*/{ BEWOELKT,MILD,  HOCH,   STARK,   SPIELEN },
 		/*D13*/{ BEWOELKT,HEISS, NORMAL, SCHWACH, SPIELEN },
 		/*D14*/{ REGEN,   MILD,  HOCH,   STARK,   NICHT_SPIELEN },
+		/*D15*/{ REGEN,   HEISS,  HOCH,   STARK,   NICHT_SPIELEN },
+		/*D16*/{ REGEN,   HEISS,  HOCH,   STARK,   NICHT_SPIELEN },
+		/*D17*/{ REGEN,   MILD,  HOCH,   STARK,   NICHT_SPIELEN },
+		/*D18*/{ REGEN,   MILD,  HOCH,   STARK,   NICHT_SPIELEN },
 	};
 }
+
 
 void Traininsgdaten::SubSetTraininsgdaten(vector<Tag> *arrVec) {
 	

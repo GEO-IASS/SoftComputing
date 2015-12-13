@@ -7,7 +7,7 @@
 
 
 int startAttributWert = 0;
-int StartAttributID = 0;
+int WurzelAttributID = 0;
 bool stopRekursion = false;
 int attributID;
 bool start = false;
@@ -534,93 +534,59 @@ void machBinaerbaum(Traininsgdaten *tD) {
 			tD->mtTagVector = WurzelDaten->mtTagVector;
 		}
 
-		start = false;
+	
+
+		//Wenn in nachfolgeWurzelAtribut alle AtrubittWerte überprüft wurden
+		switch (wurzelnachfolgeAttr)
+		{
+		case AUSBLICK_ID: if (blockAusblickRegen&&blockAusblickBewolkt&&blockAusblickSonnig) {
+				start = false;
+		} break;
+		case LUFTFEUCHTIGKEIT_ID: if (blockLuftNormal&&blockLuftHoch) {
+			start = false; 
+		}break;
+		case WIND_ID: if (blockWindStark&&blockWindSchwach) {
+			start = false; 
+		}break;
+		case DEFAULT:
+			start = false; break;
+
+		} //ende Switch
 	}// ende des Bediningug
 
+	
 
 	if (!start) {
-		StartAttributID = sucheBesteAtrribut(tD).miAttributID;
-
-		switch (StartAttributID)
+		
+		WurzelAttributID = sucheBesteAtrribut(tD).miAttributID;
+	
+		switch (WurzelAttributID)
 		{
-		case AUSBLICK_ID:			if (startAttributWert == SONNIG) { startAttributWert = REGEN; blockAusblickSonnig = true; break; }
-									if (startAttributWert == REGEN) { startAttributWert = BEWOELKT; blockAusblickRegen = true; break; }
+		case AUSBLICK_ID:			if (startAttributWert == SONNIG) {	startAttributWert = REGEN; blockAusblickSonnig = true; break; }
+									if (startAttributWert == REGEN) {	startAttributWert = BEWOELKT; blockAusblickRegen = true; break; }
 									startAttributWert = SONNIG;
 									break;
-		case LUFTFEUCHTIGKEIT_ID:	if (startAttributWert == HOCH) { startAttributWert = NORMAL; blockLuftHoch = true; break; } startAttributWert = HOCH;
-			break;
-
-		case WIND_ID:				if (startAttributWert == STARK) { startAttributWert = SCHWACH; blockWindStark = true; break; } startAttributWert = STARK;
-			break;
+		case LUFTFEUCHTIGKEIT_ID:	if (startAttributWert == HOCH) {	startAttributWert = NORMAL; blockLuftHoch = true; break; } 
+									startAttributWert = HOCH;
+									break;
+		case WIND_ID:				if (startAttributWert == STARK) {	startAttributWert = SCHWACH; blockWindStark = true; break; } 
+									startAttributWert = STARK;
+									break;
+		default: break;
 		}
+
+
 		start = true;
 
-		attributID = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(attributID, startAttributWert, tD);
+
+		teilenTraininsgdaten(WurzelAttributID, startAttributWert, tD);
 		wurzelnachfolgeAttr = sucheBesteAtrribut(tD).miAttributID;
 		WurzelDaten->mtTagVector = tD->mtTagVector;
 		tD->traininsgdatenLesen();
 	}
 
+	allesReset(tD);
 
-
-	
-	switch (wurzelnachfolgeAttr)
-	{
-
-	case AUSBLICK_ID:			if (blockAusblickRegen&&blockAusblickBewolkt&&blockAusblickSonnig) {
-
-		tD->traininsgdatenLesen();
-		blockWindStark = false;
-		blockWindSchwach = false;
-		blockWind = false;
-
-		blockLuft=false;
-		blockLuftNormal = false;
-		blockLuftHoch = false;
-
-		start = false;
-	
-	} break;
-	case LUFTFEUCHTIGKEIT_ID:	if (blockLuftNormal&&blockLuftHoch) {
-
-		tD->traininsgdatenLesen();
-		blockWindStark = false;
-		blockWindSchwach = false;
-		blockWindStark = false;
-		
-		
-		blockAusblickRegen = false;
-		blockAusblickBewolkt = false;
-		blockAusblickSonnig = false;
-		start = false;
-
-	} break;
-	case WIND_ID:				if (blockWindStark&&blockWindSchwach) {
-
-		tD->traininsgdatenLesen();
-	
-		blockLuft = false;
-		blockLuftNormal = false;
-		blockLuftHoch = false;
-
-		blockAusblickRegen = false;
-		blockAusblickBewolkt = false;
-		blockAusblickSonnig = false;
-		start = false;
-
-	} break;
-	case DEFAULT: 				tD->traininsgdatenLesen();
-								start = false; 
-								break;
-	
-	} //ende Switch
-
-	
-	
-	
-
-	
 
 	if (!stopRekursion) {
 		
@@ -714,7 +680,7 @@ void machBinaerbaum(Traininsgdaten *tD) {
 			} //Ende Wind
 
 			 
-			 
+			 //wenn alle AttributWerte geprüfft breche rekursion ab
 			if (blockAusblickRegen && blockAusblickBewolkt && blockAusblickSonnig &&
 				blockWindStark && blockWindSchwach&&
 				blockLuftHoch&&blockLuftNormal)  return;
@@ -728,15 +694,95 @@ void machBinaerbaum(Traininsgdaten *tD) {
 
 	
 
+void allesResetenAußerWurzel(int WurzelAttributID) {
 	
+	switch (WurzelAttributID)
+	{
+	case AUSBLICK_ID:			blockWindStark = false;
+	blockWindSchwach = false;
+	blockWind = false;
+
+	blockLuft = false;
+	blockLuftNormal = false;
+	blockLuftHoch = false;
+
+
+	break;
+	case LUFTFEUCHTIGKEIT_ID:		blockWindStark = false;
+	blockWindSchwach = false;
+	blockWindStark = false;
+
+
+	blockAusblickRegen = false;
+	blockAusblickBewolkt = false;
+	blockAusblickSonnig = false;
+	break;
+
+	case WIND_ID:					blockLuft = false;
+	blockLuftNormal = false;
+	blockLuftHoch = false;
+
+	blockAusblickRegen = false;
+	blockAusblickBewolkt = false;
+	blockAusblickSonnig = false;
+	break;
+	}
+
+}
+void allesReset(Traininsgdaten *tD) {
+
+
+	switch (wurzelnachfolgeAttr)
+	{
+
+	case AUSBLICK_ID:			if (blockAusblickRegen&&blockAusblickBewolkt&&blockAusblickSonnig) {
+
+		tD->traininsgdatenLesen();
+		blockWindStark = false;
+		blockWindSchwach = false;
+		blockWind = false;
+
+		blockLuft = false;
+		blockLuftNormal = false;
+		blockLuftHoch = false;
+
+	} break;
+	case LUFTFEUCHTIGKEIT_ID:	if (blockLuftNormal&&blockLuftHoch) {
+
+		tD->traininsgdatenLesen();
+		blockWindStark = false;
+		blockWindSchwach = false;
+		blockWindStark = false;
+
+
+		blockAusblickRegen = false;
+		blockAusblickBewolkt = false;
+		blockAusblickSonnig = false;
+	
+
+	} break;
+	case WIND_ID:				if (blockWindStark&&blockWindSchwach) {
+		tD->traininsgdatenLesen();
+
+		blockLuft = false;
+		blockLuftNormal = false;
+		blockLuftHoch = false;
+
+		blockAusblickRegen = false;
+		blockAusblickBewolkt = false;
+		blockAusblickSonnig = false;
 		
-	
 
-	
-		
-	
+	} break;
+	case DEFAULT: 				tD->traininsgdatenLesen();
+		start = false;
+		break;
+
+	} //ende Switch
 
 
+
+}
 	
 //-----------------------------------------
 void wurzelAusgabe(Attribut b) {
