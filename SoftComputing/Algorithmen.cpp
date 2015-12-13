@@ -516,6 +516,54 @@ void machBinaerbaum(Traininsgdaten *tD) {
 	//cout << "-------------------REKURSIONNUmmer" << i++ << "------------------------" << endl;
 	laufvariable++;
 	
+
+
+	// Bedienung wenn das ENDE des Blattes erreicht wurde
+	if (sucheBesteAtrribut(tD).mdAttributEntropie == 0 || wurzelnachfolgeAttr == 0)
+	{
+		if (blockAusblick == true) {
+			blockAusblick = false;
+			tD->mtTagVector = WurzelDaten->mtTagVector;
+		}
+		if (blockWind == true) {
+			blockWind = false;
+			tD->mtTagVector = WurzelDaten->mtTagVector;
+		}
+		if (blockLuft == true) {
+			blockLuft = false;
+			tD->mtTagVector = WurzelDaten->mtTagVector;
+		}
+
+		start = false;
+	}// ende des Bediningug
+
+
+	if (!start) {
+		StartAttributID = sucheBesteAtrribut(tD).miAttributID;
+
+		switch (StartAttributID)
+		{
+		case AUSBLICK_ID:			if (startAttributWert == SONNIG) { startAttributWert = REGEN; blockAusblickSonnig = true; break; }
+									if (startAttributWert == REGEN) { startAttributWert = BEWOELKT; blockAusblickRegen = true; break; }
+									startAttributWert = SONNIG;
+									break;
+		case LUFTFEUCHTIGKEIT_ID:	if (startAttributWert == HOCH) { startAttributWert = NORMAL; blockLuftHoch = true; break; } startAttributWert = HOCH;
+			break;
+
+		case WIND_ID:				if (startAttributWert == STARK) { startAttributWert = SCHWACH; blockWindStark = true; break; } startAttributWert = STARK;
+			break;
+		}
+		start = true;
+
+		attributID = sucheBesteAtrribut(tD).miAttributID;
+		teilenTraininsgdaten(attributID, startAttributWert, tD);
+		wurzelnachfolgeAttr = sucheBesteAtrribut(tD).miAttributID;
+		WurzelDaten->mtTagVector = tD->mtTagVector;
+		tD->traininsgdatenLesen();
+	}
+
+
+
 	
 	switch (wurzelnachfolgeAttr)
 	{
@@ -569,49 +617,8 @@ void machBinaerbaum(Traininsgdaten *tD) {
 	} //ende Switch
 
 	
-	if(!start){
-		StartAttributID = sucheBesteAtrribut(tD).miAttributID;
-		
-		switch (StartAttributID)
-		{
-		case AUSBLICK_ID:			if (startAttributWert == SONNIG) { startAttributWert = REGEN; blockAusblickSonnig = true; break; } 
-									if (startAttributWert == REGEN) {startAttributWert = BEWOELKT; blockAusblickRegen = true; break; } 
-									startAttributWert = SONNIG;
-									break;
-		case LUFTFEUCHTIGKEIT_ID:	if (startAttributWert == HOCH) { startAttributWert = NORMAL; blockLuftHoch = true; break; } startAttributWert = HOCH;
-									break;
-
-		case WIND_ID:				if (startAttributWert == STARK) { startAttributWert = SCHWACH; blockWindStark = true; break; } startAttributWert = STARK;
-									break;
-		}
-		start = true;
-		
-		attributID = sucheBesteAtrribut(tD).miAttributID;
-		teilenTraininsgdaten(attributID, startAttributWert, tD);
-		wurzelnachfolgeAttr = sucheBesteAtrribut(tD).miAttributID;
-		WurzelDaten->mtTagVector = tD->mtTagVector;
-		tD->traininsgdatenLesen();
-	}
-
 	
-	// Bedienung wenn das ENDE des Blattes erreicht wurde
-	if (sucheBesteAtrribut(tD).mdAttributEntropie == 0 || wurzelnachfolgeAttr==0)
-	{
-		if (blockAusblick == true) {
-			blockAusblick = false;
-			tD->mtTagVector = WurzelDaten->mtTagVector;
-		}
-		if (blockWind == true) {
-			blockWind = false;
-			tD->mtTagVector = WurzelDaten->mtTagVector;
-		}
-		if (blockLuft == true) {
-			blockLuft = false;
-			tD->mtTagVector = WurzelDaten->mtTagVector;
-		}
-
-		
-	}// ende des Bediningug
+	
 
 	
 
