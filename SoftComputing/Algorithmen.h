@@ -30,6 +30,7 @@ void machBinaerbaum(Traininsgdaten *tD);
 void resetNachAttributsWerten(Traininsgdaten *tD);
 void allesReseten();
 void allesResetenNachWurzel(int WurzelAttributID);
+void alleAttrubutWertenPruefen(bool &blockAttributWert, bool &blockAttribut, int &attribut, int attributWert, Traininsgdaten *tabelle, Traininsgdaten *subTabelle);
 
 
 void InfoAusgabe(Traininsgdaten *tD);
