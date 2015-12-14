@@ -593,9 +593,6 @@ void machBinaerbaum(Traininsgdaten *tD) {
 
 
 	if (!stopRekursion) {
-		
-			
-	
 
 		SubDaten->mtTagVector =tD->mtTagVector;
 	//	InfoAusgabe(tD);
@@ -825,7 +822,6 @@ void wurzelAusgabe(Attribut b) {
 //-----------------------------------------
 void InfoAusgabe(Traininsgdaten *tD) {
 
-#ifdef AUSGABE1
 	for (int i = 0; i < tD->mtTagVector->size(); i++)
 		tD->mtTagVector->at(i).tagAusgabe();
 	cout << tD->mtTagVector->size() << endl;
@@ -835,36 +831,7 @@ void InfoAusgabe(Traininsgdaten *tD) {
 	cout << "Bestes Atribut: " << "\t\t";  wurzelAusgabe(sucheBesteAtrribut(tD)); cout << endl;
 	cout << "------------" << endl;
 
-#else 
-	if (wurzel == 100 && test == 60)
-	{
-		cout << "\t\t\t\t\t\tregnerisch" << endl << endl;
 
-	}
-	if (wurzel == 100 && test == 70)
-	{
-		cout << "\t\t\t\tbewoelkt" << endl << endl;
-		cout << "\t\t\t\tPlay" << endl << endl;
-
-	}
-	if (wurzel == 300 && test == 80)
-	{
-		cout << "Luftfeuchtigkeit" << endl << endl;
-		cout << "Normal\t\tHoch" << endl << endl;
-		cout << "Play\t\tDon't Play" << endl << endl;
-	}
-	if (wurzel == 400 && test == 90)
-	{
-		cout << "\t\t\t\t\t\tWind" << endl << endl;
-		cout << "\t\t\t\t\t\tSchwach\t\tStark" << endl << endl;
-		cout << "\t\t\t\t\t\tPlay\t\tDon't Play" << endl << endl;
-	}
-	if (wurzel == 100 && test == 50)
-	{
-		cout << "\t\t\t\tAusblick" << endl << endl;
-		cout << "sonnig" << endl << endl;
-	}
-#endif
 
 }
 
